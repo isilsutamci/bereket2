@@ -1,0 +1,7 @@
+{
+  "name": "bereket",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Bereket: gıda atığı ölçüm ve geri kazanım uygulaması",
+  "engines": { "node": ">=20" }
+}

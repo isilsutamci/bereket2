@@ -1,0 +1,2501 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FFFFFF">
+<title>Bereket</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --frame:#E4F2E9; --bg:#FFFFFF; --surface:#FFFFFF; --sunk:#EEF7F1; --ink:#10251A; --muted:#5B6F63; --line:#DDEAE2;
+  --green:#1E7A46; --green-ink:#FFFFFF; --mint:#CDEBD8; --tomato:#C4382B; --wheat:#C08A0E; --leaf:#62A83A; --teal:#13837A; --slate:#6E8177; --animal:#B0472F;
+  --display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --body:"Instrument Sans", "Helvetica Neue", "Segoe UI", system-ui, sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --frame:#060D09; --bg:#0C1712; --surface:#12211A; --sunk:#182C22; --ink:#E6F2EA; --muted:#97AE9F; --line:#243D30;
+    --green:#4CC37F; --green-ink:#0C1712; --mint:#1F3D2D; --tomato:#F0705F; --wheat:#E8BE4C; --leaf:#9BD46E; --teal:#45C2B6; --slate:#91A69A; --animal:#F08A6E;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --frame:#060D09; --bg:#0C1712; --surface:#12211A; --sunk:#182C22; --ink:#E6F2EA; --muted:#97AE9F; --line:#243D30;
+  --green:#4CC37F; --green-ink:#0C1712; --mint:#1F3D2D; --tomato:#F0705F; --wheat:#E8BE4C; --leaf:#9BD46E; --teal:#45C2B6; --slate:#91A69A; --animal:#F08A6E;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%; scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0; min-height:100%; background:var(--bg); color:var(--ink); font-family:var(--body); font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased; -webkit-tap-highlight-color:transparent}
+button,input,select,textarea{font:inherit; color:inherit}
+:focus-visible{outline:3px solid var(--green); outline-offset:2px; border-radius:8px}
+img{max-width:100%}
+
+/* ---------- App frame ---------- */
+.app{max-width:440px; margin:0 auto; min-height:100%; background:var(--bg); display:flex; flex-direction:column; position:relative}
+@media (min-width:520px){
+  body{background:var(--frame); padding:24px 0}
+  .app{height:min(900px, calc(100dvh - 48px)); min-height:0; overflow-y:auto; border-radius:38px; border:1px solid var(--line); box-shadow:0 40px 80px -40px rgba(16,70,40,.45); scrollbar-width:none}
+  .app::-webkit-scrollbar{display:none}
+}
+.appbar{position:sticky; top:0; z-index:5; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 18px 12px; background:var(--bg); border-bottom:1px solid transparent}
+.appbar.scrolled{border-bottom-color:var(--line)}
+.appbar .who{display:flex; align-items:center; gap:10px; min-width:0}
+.appbar h1{font-family:var(--display); font-size:22px; font-weight:800; letter-spacing:-.015em; margin:0; line-height:1.1}
+.appbar small{display:block; color:var(--muted); font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.iconbtn{width:42px; height:42px; border-radius:50%; border:0; background:var(--sunk); display:grid; place-items:center; cursor:pointer; color:var(--ink); flex:none}
+.main{flex:1; padding:8px 18px 28px}
+.tabs{position:sticky; bottom:0; z-index:6; display:grid; grid-template-columns:repeat(5,1fr); background:var(--surface); border-top:1px solid var(--line); padding:6px 4px calc(8px + env(safe-area-inset-bottom,0px))}
+.tabs button{background:none; border:0; display:flex; flex-direction:column; align-items:center; gap:2px; padding:6px 0; font-size:11px; font-weight:600; color:var(--muted); cursor:pointer}
+.tabs button[aria-current="page"]{color:var(--green)}
+.tabs .fab .ic{width:58px; height:58px; margin-top:-30px; border-radius:50%; background:var(--green); color:var(--green-ink); display:grid; place-items:center; border:5px solid var(--surface); box-shadow:0 10px 20px -8px rgba(30,122,70,.7)}
+.tabs .fab[aria-current="page"] .ic{background:var(--ink); color:var(--bg)}
+.app.auth .appbar,.app.auth .tabs{display:none}
+.app.auth .main{padding:0}
+
+/* ---------- Type ---------- */
+h1,h2,h3{font-family:var(--display); letter-spacing:-.015em; margin:0}
+.hero{font-size:31px; line-height:1.08; font-weight:800}
+.hero-sub{font-size:16px; color:var(--muted); margin:10px 0 0}
+h2{font-size:19px; font-weight:700; line-height:1.25}
+h3{font-size:16px; font-weight:700}
+p{margin:0}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+.num{font-variant-numeric:tabular-nums}
+.lead{color:var(--muted); margin:4px 0 18px}
+
+/* ---------- Blocks ---------- */
+.section{margin-top:22px}
+.section-head{display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:12px}
+.panel{background:var(--surface); border:1px solid var(--line); border-radius:22px; padding:18px}
+.stack{display:grid; gap:14px}
+
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; border:0; border-radius:16px; padding:13px 20px; font-weight:700; cursor:pointer; background:var(--green); color:var(--green-ink); min-height:52px; font-size:16px}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.45; cursor:not-allowed; transform:none}
+.btn.ghost{background:var(--sunk); color:var(--ink)}
+.btn.line{background:transparent; color:var(--ink); box-shadow:inset 0 0 0 1.5px var(--line)}
+.btn.small{padding:8px 14px; min-height:40px; font-size:14px; border-radius:12px}
+.btn.block{width:100%}
+.link{background:none; border:0; padding:0; color:var(--green); font-weight:600; cursor:pointer; text-decoration:underline; text-underline-offset:3px}
+.row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+
+.seg{display:grid; grid-auto-flow:column; grid-auto-columns:1fr; background:var(--sunk); border-radius:14px; padding:4px}
+.seg button{border:0; background:none; padding:9px 12px; border-radius:11px; font-weight:600; font-size:14px; color:var(--muted); cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--surface); color:var(--ink); box-shadow:0 1px 3px rgba(16,37,26,.12)}
+
+.chip{display:inline-flex; align-items:center; gap:6px; padding:5px 11px; border-radius:999px; font-size:13px; font-weight:600; background:var(--sunk)}
+.chip.good{color:var(--green)} .chip.bad{color:var(--tomato)}
+.dot{width:10px; height:10px; border-radius:50%; display:inline-block; flex:none}
+
+.legend{display:flex; flex-wrap:wrap; gap:6px 14px; font-size:12.5px; color:var(--muted); margin-top:8px}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.hbar{display:grid; grid-template-columns:118px 1fr auto; gap:10px; align-items:center; padding:6px 0; font-size:14px}
+.hbar .track{height:10px; background:var(--sunk); border-radius:5px; overflow:hidden}
+.hbar .fill{height:100%; border-radius:5px; background:var(--green)}
+.chart{width:100%; height:auto; display:block}
+.chart text{font-family:var(--body); font-size:10px; fill:var(--muted)}
+
+.list{list-style:none; margin:0; padding:0}
+.list li{display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 0; border-top:1px solid var(--line)}
+.list li:first-child{border-top:0}
+
+/* ---------- Forms ---------- */
+label.f{display:grid; gap:6px; font-size:14px; font-weight:600}
+.in, select, input[type=date], input[type=number], input[type=text], input[type=password], textarea{width:100%; background:var(--surface); border:1.5px solid var(--line); border-radius:14px; padding:11px 14px; min-height:50px}
+.in:focus, select:focus, input:focus, textarea:focus{border-color:var(--green); outline:none; box-shadow:0 0 0 4px var(--mint)}
+.fields{display:grid; gap:12px; grid-template-columns:1fr 1fr}
+.fields .wide{grid-column:1/-1}
+.pw{position:relative}
+.pw input{padding-right:84px}
+.pw button{position:absolute; right:6px; top:50%; transform:translateY(-50%); border:0; background:none; color:var(--green); font-weight:700; font-size:13px; padding:8px 10px; cursor:pointer}
+.check{display:flex; align-items:center; gap:10px; font-size:14px}
+.check input{width:20px; height:20px; accent-color:var(--green)}
+
+.drop{display:grid; place-items:center; text-align:center; gap:8px; border:2px dashed var(--line); border-radius:22px; padding:26px 16px; cursor:pointer; background:var(--sunk); min-height:210px; position:relative; overflow:hidden}
+.drop.over{border-color:var(--green)}
+.drop input{position:absolute; inset:0; opacity:0; cursor:pointer}
+.drop img{max-height:280px; border-radius:14px; object-fit:contain}
+.drop strong{font-family:var(--display); font-size:19px}
+.drop .cam{width:64px; height:64px; border-radius:50%; background:var(--green); color:var(--green-ink); display:grid; place-items:center}
+
+.irow{display:grid; gap:8px; grid-template-columns:1fr 1fr; grid-template-areas:"name name" "cat type" "kg route"; padding:14px 0; border-top:1px solid var(--line); position:relative}
+.irow:first-child{border-top:0; padding-top:4px}
+.irow [data-f=name]{grid-area:name; padding-right:52px} .irow [data-f=category]{grid-area:cat} .irow [data-f=type]{grid-area:type}
+.irow .kg{grid-area:kg} .irow [data-f=route]{grid-area:route}
+.irow .del{position:absolute; right:6px; top:20px}
+.irow:first-child .del{top:10px}
+.kg{display:flex; align-items:center; gap:6px} .kg span{color:var(--muted); font-size:14px}
+.icon{width:38px; height:38px; border-radius:50%; border:0; background:var(--sunk); cursor:pointer; font-size:20px; line-height:1; color:var(--muted); flex:none}
+.ai-note{border-left:4px solid var(--green); padding:10px 14px; background:var(--sunk); border-radius:0 14px 14px 0; margin-bottom:12px}
+
+.scan{display:grid; place-items:center; text-align:center; gap:12px; padding:26px 12px}
+.nazar-big circle{transform-origin:50% 50%}
+@media (prefers-reduced-motion:no-preference){
+  .nazar-big .r1{animation:pulse 1.8s ease-in-out infinite}
+  .nazar-big .r2{animation:pulse 1.8s ease-in-out .2s infinite}
+  .nazar-big .r3{animation:pulse 1.8s ease-in-out .4s infinite}
+}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+
+.day{border-top:1px solid var(--line); padding:16px 0; display:grid; gap:10px}
+.day:first-child{border-top:0; padding-top:2px}
+.day h3{display:flex; gap:10px; align-items:baseline}
+.sugg{display:flex; gap:12px; align-items:flex-start}
+.sugg .bar{width:4px; align-self:stretch; border-radius:2px; flex:none}
+.plan{white-space:pre-wrap; line-height:1.6; font-size:15px}
+
+.route{display:grid; gap:8px; border-radius:22px; padding:18px; background:var(--surface); border:1px solid var(--line); border-left:6px solid var(--c)}
+.route .big{font-family:var(--display); font-size:30px; font-weight:800; line-height:1}
+.statusline{display:grid; gap:8px; padding:14px 0; border-top:1px solid var(--line)}
+
+.impact{display:grid; border-top:1px solid var(--line)}
+.impact > div{padding:16px 0; border-bottom:1px solid var(--line)}
+.impact .v{font-family:var(--display); font-size:34px; font-weight:800; line-height:1.05; color:var(--green)}
+.sdg{display:flex; gap:12px; align-items:flex-start; font-size:15px}
+.sdg b{font-family:var(--display); font-size:16px; min-width:62px}
+
+.steps{list-style:none; counter-reset:s; padding:0; margin:22px 0 0; display:grid; gap:14px}
+.steps li{counter-increment:s; display:grid; grid-template-columns:40px 1fr; gap:12px; align-items:start}
+.steps li::before{content:counter(s); width:34px; height:34px; border-radius:50%; background:var(--mint); color:var(--green); display:grid; place-items:center; font-weight:800; font-family:var(--display)}
+
+/* ---------- Login ---------- */
+.login{min-height:100%; display:flex; flex-direction:column}
+.login-top{background:var(--green); color:var(--green-ink); padding:48px 26px 64px; border-radius:0 0 36px 36px; position:relative; overflow:hidden}
+.login-top::after{content:""; position:absolute; right:-60px; top:-40px; width:220px; height:220px; border-radius:50%; border:28px solid rgba(255,255,255,.1)}
+.login-top .logo{width:64px; height:64px; border-radius:20px; background:var(--bg); display:grid; place-items:center; margin-bottom:22px}
+.login-top h2{font-size:38px; font-weight:800; line-height:1}
+.login-top p{margin-top:10px; font-size:16px; opacity:.9; max-width:28ch}
+.login-card{margin:-34px 16px 0; background:var(--surface); border-radius:26px; padding:18px; border:1px solid var(--line); box-shadow:0 20px 40px -24px rgba(16,70,40,.4); display:grid; gap:14px; position:relative; z-index:1}
+.login-foot{padding:20px 26px 32px; text-align:center; display:grid; gap:8px}
+.err{color:var(--tomato); font-size:14px; font-weight:600}
+
+/* ---------- Sheet + toast ---------- */
+dialog{border:0; padding:0; width:min(440px,100%); max-width:100%; margin:auto auto 0; border-radius:28px 28px 0 0; background:var(--surface); color:var(--ink)}
+dialog::backdrop{background:rgba(6,20,12,.5)}
+.dlg{padding:10px 20px calc(22px + env(safe-area-inset-bottom,0px)); display:grid; gap:14px; max-height:88vh; overflow:auto}
+.grab{width:44px; height:5px; border-radius:3px; background:var(--line); margin:6px auto 4px}
+.toast{position:fixed; left:50%; bottom:calc(96px + env(safe-area-inset-bottom,0px)); transform:translateX(-50%); background:var(--ink); color:var(--bg); padding:12px 18px; border-radius:14px; font-weight:600; z-index:20; opacity:0; pointer-events:none; transition:opacity .2s; width:max-content; max-width:min(400px, calc(100% - 32px)); text-align:center; font-size:14px}
+.toast.show{opacity:1}
+
+/* ---------- v3 additions ---------- */
+.tabs{grid-template-columns:repeat(var(--n,5),1fr)}
+.avatar{width:64px; height:64px; border-radius:20px; background:var(--green); color:var(--green-ink); display:grid; place-items:center; font-family:var(--display); font-weight:800; font-size:24px; flex:none}
+.profile-head{display:flex; gap:14px; align-items:center; margin:6px 0 4px}
+.profile-head h2{font-size:22px}
+.chip.h{color:var(--animal)} .chip.b{color:var(--green)} .chip.k{color:var(--slate)}
+.split{display:flex; height:14px; border-radius:7px; overflow:hidden; background:var(--sunk)}
+.split i{display:block; height:100%}
+.splitrow{display:grid; gap:6px; margin-top:12px}
+.splitrow .row{justify-content:space-between; font-size:14px}
+.meta{grid-column:1/-1; display:flex; flex-wrap:wrap; gap:6px; align-items:center; font-size:13px}
+.tiles{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.tile{border-radius:18px; padding:14px; background:var(--sunk); border-left:5px solid var(--c)}
+.tile b{display:block; font-family:var(--display); font-size:22px; line-height:1.1}
+.tile span{font-size:13px; color:var(--muted)}
+.stops{list-style:none; counter-reset:st; margin:0; padding:0}
+.stops li{counter-increment:st; display:grid; grid-template-columns:34px 1fr; gap:12px; padding:16px 0; border-top:1px solid var(--line)}
+.stops li:first-child{border-top:0; padding-top:4px}
+.stops li::before{content:counter(st); width:30px; height:30px; border-radius:50%; background:var(--mint); color:var(--green); display:grid; place-items:center; font-weight:800; font-family:var(--display); font-size:14px}
+.stops li.done::before{content:"✓"; background:var(--green); color:var(--green-ink)}
+details.panel summary{cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:center; gap:10px}
+details.panel summary::-webkit-details-marker{display:none}
+details.panel summary::after{content:"+"; font-size:22px; color:var(--muted); line-height:1}
+details.panel[open] summary::after{content:"−"}
+.ftable{width:100%; border-collapse:collapse; font-size:14px; margin-top:12px}
+.ftable th{text-align:left; font-weight:600; color:var(--muted); font-size:12.5px; padding:6px 4px}
+.ftable td{padding:5px 4px; border-top:1px solid var(--line)}
+.ftable input{min-height:38px; padding:6px 8px; border-radius:10px; width:76px}
+.rcard{display:grid; gap:10px}
+.kv{display:grid; grid-template-columns:1fr 1fr; gap:8px 14px; font-size:14px}
+.kv b{display:block; font-family:var(--display); font-size:18px}
+
+/* ---------- v9: canlı akış ---------- */
+.feed{display:grid}
+.feed-row{display:grid; grid-template-columns:56px 1fr auto; gap:12px; align-items:center; padding:10px 0; border:0; border-top:1px solid var(--line); background:none; text-align:left; cursor:pointer; color:var(--ink); width:100%}
+.feed-row:first-child{border-top:0; padding-top:2px}
+.feed-row .th{width:56px; height:56px; border-radius:14px; background:var(--sunk); overflow:hidden; display:grid; place-items:center; color:var(--muted)}
+.feed-row .th img{width:100%; height:100%; object-fit:cover}
+.feed-row strong{display:block; font-size:15px; line-height:1.3}
+.feed-row .sub{font-size:13px; color:var(--muted); font-variant-numeric:tabular-nums}
+.feed-row .tl{font-weight:700; font-variant-numeric:tabular-nums; white-space:nowrap}
+.chip.new{background:var(--green); color:var(--green-ink)}
+.livedot{display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:700; color:var(--green)}
+.livedot::before{content:""; width:8px; height:8px; border-radius:50%; background:var(--green)}
+@media (prefers-reduced-motion:no-preference){ .livedot::before{animation:blink 1.6s infinite} }
+.live-banner{position:fixed; left:50%; top:calc(12px + env(safe-area-inset-top,0px)); transform:translateX(-50%); z-index:30; width:min(420px, calc(100% - 24px)); display:grid; grid-template-columns:52px 1fr auto; gap:12px; align-items:center; padding:10px 12px; border-radius:18px; background:var(--ink); color:var(--bg); box-shadow:0 20px 40px -20px rgba(0,0,0,.5)}
+.live-banner[hidden]{display:none}
+.live-banner .th{width:52px; height:52px; border-radius:12px; overflow:hidden; background:rgba(255,255,255,.12); display:grid; place-items:center}
+.live-banner .th img{width:100%; height:100%; object-fit:cover}
+.live-banner b{display:block; font-size:14.5px}
+.live-banner span{font-size:13px; opacity:.85}
+.live-banner button{border:0; border-radius:12px; padding:9px 12px; font-weight:700; background:var(--green); color:var(--green-ink); cursor:pointer}
+#detailBody{grid-auto-rows:max-content}
+@media (min-width:700px){ #detail{width:min(560px, 100% - 32px); margin:auto; border-radius:28px} }
+.detail-photo{width:100%; aspect-ratio:4/3; flex:none; border-radius:18px; background:var(--sunk); overflow:hidden; display:grid; place-items:center; color:var(--muted); font-size:14px}
+.detail-photo img{width:100%; height:100%; object-fit:cover}
+/* ---------- v8: finans ---------- */
+.stack > *, form.panel > *{min-width:0}
+#profileForm .fields{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.chip.src-foto{color:var(--wheat)} .chip.src-elle{color:var(--green)}
+.fin{display:grid; gap:2px}
+.fin .line{display:flex; justify-content:space-between; gap:12px; padding:10px 0; border-top:1px solid var(--line); font-size:15px}
+.fin .line:first-child{border-top:0}
+.fin .line b{font-variant-numeric:tabular-nums; white-space:nowrap}
+.fin .big{font-family:var(--display); font-size:24px; font-weight:800; line-height:1.15; margin-bottom:6px}
+.note{font-size:13px; color:var(--muted); margin-top:10px}
+.ftable td.ro{color:var(--muted); font-variant-numeric:tabular-nums}
+.ftable input.name{width:150px}
+.ftable input.sm{width:70px}
+.tag{display:inline-block; font-size:11.5px; font-weight:700; padding:2px 8px; border-radius:999px; background:var(--sunk)}
+.tag.own{color:var(--green)} .tag.est{color:var(--wheat)}
+.menurow{padding:14px 0; border-top:1px solid var(--line); display:grid; gap:8px}
+.menurow:first-child{border-top:0; padding-top:2px}
+.menurow .three{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; font-size:13px; color:var(--muted)}
+.menurow .three b{display:block; color:var(--ink); font-size:15px; font-variant-numeric:tabular-nums}
+.menurow .three b.neg{color:var(--tomato)}
+.menurow .bar{height:6px; border-radius:3px; background:var(--sunk); overflow:hidden}
+.menurow .bar i{display:block; height:100%; border-radius:3px}
+/* ---------- v6: photo ---------- */
+.photo-hero{background:var(--surface); border:1px solid var(--line); border-radius:24px; padding:18px; display:grid; gap:14px}
+.photo-hero h2{font-size:21px}
+.pbtns{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.pbtn{position:relative; overflow:hidden}
+.pbtn input{position:absolute; inset:0; opacity:0; cursor:pointer; font-size:0}
+.pbtn.disabled{opacity:.45; pointer-events:none}
+.thumbs{display:flex; gap:10px; overflow-x:auto; padding-bottom:2px}
+.thumb{position:relative; flex:none; width:96px; height:96px; border-radius:16px; overflow:hidden; background:var(--sunk)}
+.thumb img{width:100%; height:100%; object-fit:cover}
+.thumb button{position:absolute; top:4px; right:4px; width:26px; height:26px; border-radius:50%; border:0; background:rgba(10,20,14,.7); color:#fff; font-size:16px; line-height:1; cursor:pointer}
+.thumb.add{display:grid; place-items:center; border:2px dashed var(--line); background:transparent; color:var(--muted); font-size:28px; cursor:pointer}
+.thumb.add input{position:absolute; inset:0; opacity:0; cursor:pointer}
+.hint{display:flex; gap:10px; align-items:flex-start; font-size:13.5px; color:var(--muted)}
+.hint b{color:var(--ink)}
+.analysis{border-radius:24px; overflow:hidden; border:1px solid var(--line); background:var(--surface)}
+.analysis .head{display:grid; grid-template-columns:84px 1fr; gap:14px; padding:16px; background:var(--green); color:var(--green-ink); align-items:center}
+.analysis .head img{width:84px; height:84px; object-fit:cover; border-radius:14px; border:2px solid rgba(255,255,255,.4)}
+.analysis .head h3{font-size:18px}
+.analysis .head p{font-size:13px; opacity:.9}
+.analysis .body{padding:6px 16px 16px}
+.arow{display:grid; grid-template-columns:1fr auto; gap:4px 10px; padding:12px 0; border-top:1px solid var(--line)}
+.arow:first-child{border-top:0}
+.arow .nm{display:flex; gap:6px; align-items:center; flex-wrap:wrap; font-weight:700}
+.arow .sub{grid-column:1/-1; display:flex; gap:12px; flex-wrap:wrap; font-size:13px; color:var(--muted)}
+.arow .sub b{color:var(--ink); font-variant-numeric:tabular-nums}
+.conf{grid-column:1/-1; height:5px; border-radius:3px; background:var(--sunk); overflow:hidden}
+.conf i{display:block; height:100%; border-radius:3px}
+.oc{display:grid; gap:6px; margin-top:12px}
+/* ---------- v5 ---------- */
+.qsearch{margin-bottom:10px}
+.qcats{display:flex; gap:6px; overflow-x:auto; padding-bottom:8px; scrollbar-width:none}
+.qcats::-webkit-scrollbar{display:none}
+.qcats button{flex:none; border:0; background:var(--sunk); color:var(--muted); border-radius:999px; padding:7px 13px; font-weight:600; font-size:13px; cursor:pointer}
+.qcats button[aria-pressed="true"]{background:var(--green); color:var(--green-ink)}
+.qgrid{display:flex; flex-wrap:wrap; gap:8px}
+.qgrid button{border:1.5px solid var(--line); background:var(--surface); border-radius:999px; padding:8px 13px; font-weight:600; font-size:14px; cursor:pointer; display:inline-flex; gap:6px; align-items:center}
+.qgrid button:active{border-color:var(--green)}
+.map{width:100%; height:auto; display:block; border-radius:18px}
+.map text{font-family:var(--body)}
+.pin.visited circle.b{fill:var(--slate)}
+.track{display:grid; gap:12px}
+.trackstat{display:flex; gap:10px; align-items:flex-start; font-weight:600; font-size:15px}
+.trackstat .live{width:10px; height:10px; border-radius:50%; background:var(--tomato); margin-top:6px; flex:none}
+@media (prefers-reduced-motion:no-preference){ .trackstat .live{animation:blink 1.4s infinite} }
+@keyframes blink{50%{opacity:.25}}
+.rstats{display:grid; grid-template-columns:repeat(3,1fr); gap:8px}
+.rstats div{background:var(--sunk); border-radius:14px; padding:10px 12px}
+.rstats b{display:block; font-family:var(--display); font-size:19px}
+.rstats span{font-size:12px; color:var(--muted)}
+.notif{list-style:none; margin:0; padding:0}
+.notif li{display:grid; grid-template-columns:52px 1fr; gap:10px; padding:10px 0; border-top:1px solid var(--line); font-size:14px}
+.notif li:first-child{border-top:0}
+.notif time{font-weight:700; color:var(--green); font-variant-numeric:tabular-nums}
+.pbar{display:grid; gap:4px; padding:10px 0; border-top:1px solid var(--line)}
+.pbar:first-child{border-top:0}
+.pbar .top{display:flex; justify-content:space-between; gap:10px; font-size:14px}
+.pbar .track{height:12px; border-radius:6px; background:var(--sunk); overflow:hidden}
+.pbar .track i{display:block; height:100%; border-radius:6px}
+/* ---------- v4 ---------- */
+.list li > .num{white-space:nowrap}
+.tabs button{font-size:10.5px}
+.role-pick{margin:-34px 16px 0; display:grid; gap:12px; position:relative; z-index:1}
+.role-card{display:grid; grid-template-columns:56px 1fr 20px; gap:14px; align-items:center; text-align:left; padding:18px; border-radius:24px; border:1px solid var(--line); background:var(--surface); box-shadow:0 20px 40px -26px rgba(16,70,40,.45); cursor:pointer; color:var(--ink)}
+.role-card:active{transform:scale(.99)}
+.role-card .ri{width:56px; height:56px; border-radius:18px; background:var(--mint); color:var(--green); display:grid; place-items:center}
+.role-card b{display:block; font-family:var(--display); font-size:19px}
+.role-card small{display:block; color:var(--muted); font-size:14px; margin-top:2px; line-height:1.35}
+.role-card .arrow{font-size:26px; color:var(--muted)}
+.backbtn{display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,.16); color:inherit; border:0; border-radius:999px; padding:8px 14px 8px 10px; font-weight:600; cursor:pointer; margin-bottom:20px}
+.quick{display:flex; gap:8px; overflow-x:auto; padding:2px 0 6px; scrollbar-width:none}
+.quick::-webkit-scrollbar{display:none}
+.quick button{flex:none; border:1.5px solid var(--line); background:var(--surface); border-radius:999px; padding:8px 14px; font-weight:600; font-size:14px; cursor:pointer; display:inline-flex; gap:6px; align-items:center}
+.quick button:active{border-color:var(--green)}
+.calc{background:var(--green); color:var(--green-ink); border-radius:22px; padding:18px; display:grid; gap:12px}
+.calc .three{display:grid; grid-template-columns:repeat(3,1fr); gap:8px}
+.calc .three b{display:block; font-family:var(--display); font-size:22px; line-height:1.1}
+.calc .three span{font-size:12.5px; opacity:.85}
+.calc .og{font-size:13px; opacity:.92}
+.flow{display:grid; grid-template-columns:repeat(4,1fr); gap:4px; position:relative; margin-top:18px}
+.flow::before{content:""; position:absolute; top:17px; left:12%; right:12%; height:3px; background:var(--line); z-index:0}
+.flow > div{text-align:center; font-size:12px; color:var(--muted); position:relative; z-index:1}
+.flow .c{width:36px; height:36px; border-radius:50%; margin:0 auto 6px; display:grid; place-items:center; background:var(--sunk); border:3px solid var(--bg); font-weight:800; font-family:var(--display)}
+.flow .on{color:var(--ink); font-weight:600}
+.flow .on .c{background:var(--green); color:var(--green-ink)}
+.save{padding:14px 0; border-top:1px solid var(--line); display:grid; gap:8px}
+.save:first-child{border-top:0; padding-top:2px}
+.save .top{display:flex; justify-content:space-between; gap:10px; align-items:baseline}
+.save .three{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; font-size:13px; color:var(--muted)}
+.save .three b{display:block; color:var(--ink); font-size:15px; font-variant-numeric:tabular-nums}
+.save .three b.neg{color:var(--tomato)}
+.save .bar{height:6px; border-radius:3px; background:var(--sunk); overflow:hidden}
+.save .bar i{display:block; height:100%; background:var(--green); border-radius:3px}
+.bigtri{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:16px}
+.bigtri div{background:var(--sunk); border-radius:18px; padding:14px 12px}
+.bigtri b{display:block; font-family:var(--display); font-size:21px; color:var(--green); line-height:1.1}
+.bigtri span{font-size:12.5px; color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="app auth" id="app">
+  <header class="appbar" id="appbar">
+    <div class="who"><span class="mark"></span><div style="min-width:0"><h1 id="title">Pano</h1><small id="bizname"></small></div></div>
+    <button class="iconbtn" data-action="profile" aria-label="Profil"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg></button>
+  </header>
+  <main class="main" id="view" tabindex="-1"></main>
+  <nav class="tabs" id="tabs" aria-label="Ana menü"></nav>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="live-banner" id="live" role="status" aria-live="polite" hidden></div>
+<dialog id="detail" aria-label="Kayıt ayrıntısı"><div class="dlg" id="detailBody"></div></dialog>
+
+<script>
+/* =========================================================
+   Helpers
+   ========================================================= */
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt = (n, d = 1) => Number(n || 0).toLocaleString('tr-TR', { maximumFractionDigits: d });
+const fmtTL = n => Math.round(n || 0).toLocaleString('tr-TR') + '\u00A0₺';
+const DAYS = ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
+const SHORT = ['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'];
+const pad = n => String(n).padStart(2, '0');
+const iso = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const today = () => iso(new Date());
+const nowHM = () => { const n = new Date(); return `${pad(n.getHours())}:${pad(n.getMinutes())}`; };
+const parseDay = s => { const [y,m,d] = s.split('-').map(Number); return new Date(y, m-1, d); };
+const addDays = (s, n) => { const d = parseDay(s); d.setDate(d.getDate() + n); return iso(d); };
+const dow = s => parseDay(s).getDay();
+const dm = s => `${s.slice(8,10)}.${s.slice(5,7)}`;
+const uid = () => Math.random().toString(36).slice(2, 10);
+const sum = (a, f) => a.reduce((t, x) => t + (f ? f(x) : x), 0);
+const r1 = n => Math.round(n * 10) / 10;
+const norm = s => String(s || '').trim().toLocaleLowerCase('tr');
+const initials = s => (String(s || '?').trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('') || '?').toLocaleUpperCase('tr');
+
+const NAZAR = size => `<svg width="${size}" height="${size}" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" style="fill:#1F4FB8"/><circle cx="20" cy="20" r="13" style="fill:#fff"/><circle cx="20" cy="20" r="8.5" style="fill:#8EC5F0"/><circle cx="20" cy="20" r="4" style="fill:#14213D"/></svg>`;
+$$('.mark').forEach(m => m.innerHTML = NAZAR(34));
+const IC = {
+  pano:'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+  tahmin:'<path d="M4 19h16"/><path d="M5 15l4-4 3 3 7-7"/><path d="M15 7h4v4"/>',
+  kaydet:'<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
+  toplama:'<path d="M3 7h11v9H3z"/><path d="M14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/>',
+  profil:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>',
+  bugun:'<circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.5 6H15a3 3 0 0 1 0 6H9a3 3 0 0 0 0 6h6.5"/>',
+  restoranlar:'<path d="M4 10h16l-1.5-5h-13z"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/>',
+  akislar:'<path d="M5 20c0-9 5-15 15-15 0 10-6 15-14 15"/><path d="M5 20l8-8"/>'
+};
+IC.bprofil = IC.profil;
+IC.tasarruf = '<path d="M12 3v18"/><path d="M17 7H9.5a3 3 0 0 0 0 6h5a3 3 0 0 1 0 6H6"/>';
+IC.btasarruf = IC.tasarruf;
+const icon = (k, s = 24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[k]}</svg>`;
+
+const R_TABS = ['pano','tahmin','kaydet','toplama','tasarruf'];
+const B_TABS = ['bugun','restoranlar','akislar','btasarruf'];
+const TITLES = { pano:'Pano', tahmin:'Üretim tahmini', kaydet:'Yemek ekle', toplama:'Taşıma sistemi', tasarruf:'Tasarruf', profil:'Profilim',
+  bugun:'Bugünkü toplama', restoranlar:'Restoranlar', akislar:'Geri kazanım', btasarruf:'İlçe tasarrufu', bprofil:'Belediye profili' };
+const TAB_LABEL = { pano:'Pano', tahmin:'Tahmin', kaydet:'Ekle', toplama:'Taşıma', tasarruf:'Tasarruf', bugun:'Bugün', restoranlar:'Restoranlar', akislar:'Akışlar', btasarruf:'Tasarruf' };
+
+/* =========================================================
+   Domain: ana bileşen → köken, karbon, maliyet
+   ========================================================= */
+const ORIGIN = { h:'Hayvansal', b:'Bitkisel', k:'Karışık' };
+const ORIGIN_COLOR = { h:'var(--animal)', b:'var(--green)', k:'var(--slate)' };
+// KARBON (sabit, düzenlenemez): kg CO2e / kg ürün.
+//   Kaynak: Poore, J. & Nemecek, T. (2018). Reducing food's environmental impacts through producers and consumers.
+//   Science 360(6392), 987–992. Değerler Our World in Data "ghg-per-kg-poore" veri setinden alınmıştır.
+//   "Karışık" için FAO (2013) Food Wastage Footprint küresel ortalaması: 3,3 Gt CO2e / 1,3 Gt israf ≈ 2,5.
+// ÇİĞ KARŞILIĞI (raw): 1 kg pişmiş yemek kaç kg çiğ ana bileşene denk gelir (yaklaşık pişme/tarif dönüşümü).
+// FİYAT (tl): ana bileşenin tahmini alış fiyatı (₺/kg). Restoran kendi fiyatını Profil'den girer.
+const MAINS = {
+  dana:     { name:'Dana eti',          origin:'h', co2:99.48, src:'Beef (beef herd)', raw:1.4,  tl:750 },
+  kuzu:     { name:'Kuzu eti',          origin:'h', co2:39.72, src:'Lamb & Mutton',    raw:1.4,  tl:800 },
+  tavuk:    { name:'Tavuk',             origin:'h', co2:9.87,  src:'Poultry Meat',     raw:1.3,  tl:200 },
+  balik:    { name:'Balık',             origin:'h', co2:13.63, src:'Fish (farmed)',    raw:1.25, tl:400 },
+  peynir:   { name:'Peynir',            origin:'h', co2:23.88, src:'Cheese',           raw:1,    tl:350 },
+  sut:      { name:'Süt & yoğurt',      origin:'h', co2:3.15,  src:'Milk',             raw:1,    tl:60 },
+  yumurta:  { name:'Yumurta',           origin:'h', co2:4.67,  src:'Eggs',             raw:1,    tl:120 },
+  pirinc:   { name:'Pirinç',            origin:'b', co2:4.45,  src:'Rice',             raw:0.4,  tl:80 },
+  tahil:    { name:'Makarna & bulgur',  origin:'b', co2:1.57,  src:'Wheat & Rye',      raw:0.43, tl:40 },
+  ekmek:    { name:'Ekmek & hamur işi', origin:'b', co2:1.57,  src:'Wheat & Rye (Bread)', raw:1, tl:45 },
+  patates:  { name:'Patates',           origin:'b', co2:0.46,  src:'Potatoes',         raw:1.05, tl:25 },
+  baklagil: { name:'Baklagil',          origin:'b', co2:1.79,  src:'Other Pulses',     raw:0.4,  tl:90 },
+  sebze:    { name:'Sebze',             origin:'b', co2:0.53,  src:'Other Vegetables', raw:1.1,  tl:40 },
+  meyve:    { name:'Meyve',             origin:'b', co2:1.05,  src:'Other Fruit',      raw:1,    tl:50 },
+  tatli:    { name:'Şerbetli tatlı',    origin:'k', co2:1.81,  src:'Beet Sugar',       raw:1,    tl:150 },
+  diger:    { name:'Diğer / karışık',   origin:'k', co2:2.5,   src:'FAO 2013 ortalama', raw:1,   tl:80 }
+};
+// Çöp sahasında 1 kg gıda atığından oluşan metan (kg CO2e): IPCC 2006 Atık Kılavuzu varsayılanları
+// DOC 0,15 × DOCf 0,5 × MCF 1,0 × F 0,5 × 16/12 × (1 − OX 0,1) = 0,045 kg CH4 × GWP100 (AR5) 28 ≈ 1,26
+const LANDFILL = 1.26;
+const LEGACY = { ekmek:'ekmek', tahil:'tahil', sebze:'sebze', et:'tavuk', corba:'baklagil', salata:'sebze', tatli:'sut', diger:'diger', kirmizi_et:'dana', sut_yumurta:'sut', sebze_meyve:'sebze' };
+const TYPES = { fazla:'Üretim fazlası', tabak:'Tabak artığı', hazirlik:'Hazırlık artığı', bozuk:'Bozulmuş / SKT' };
+const TYPE_COLOR = { fazla:'var(--tomato)', tabak:'var(--wheat)', hazirlik:'var(--leaf)', bozuk:'var(--slate)' };
+const ROUTES = {
+  gida:    { name:'Gıda bankası / STK', short:'Gıda bankası', color:'var(--wheat)', desc:'Servis edilmemiş, soğuk zinciri korunmuş yemek ihtiyaç sahiplerine ulaşır. Tabak artığı bu hatta gönderilmez.' },
+  mama:    { name:'Barınak mama hattı', short:'Mama', color:'var(--green)', desc:'Uygun artıklar belediyenin mama-kompost tesisinde işlenip hayvan barınaklarına gider.' },
+  kompost: { name:'Kompost', short:'Kompost', color:'var(--leaf)', desc:'Kabuk ve hazırlık artıkları kompost olup park, bahçe ve tarım alanlarında kullanılır.' },
+  biyogaz: { name:'Lisanslı tesis / biyogaz', short:'Biyogaz', color:'var(--teal)', desc:'Bozulmuş ürünler ve diğer akışlara uymayan atık lisanslı geri kazanım tesisine gider.' }
+};
+function defaultRoute(main, type){
+  if (type === 'fazla') return 'gida';
+  if (type === 'hazirlik') return 'kompost';
+  if (type === 'bozuk') return 'biyogaz';
+  if (['tahil','ekmek','pirinc','tavuk','dana','kuzu','balik','yumurta'].includes(main)) return 'mama';
+  if (['sebze','meyve','baklagil','patates'].includes(main)) return 'kompost';
+  return 'biyogaz';
+}
+function factorsOf(profile){
+  const out = {}, P = profile?.prices || {};
+  Object.entries(MAINS).forEach(([k, m]) => { const own = Number(P[k]) > 0; out[k] = { co2: m.co2, tl: own ? Number(P[k]) : m.tl, own }; });
+  return out;
+}
+// Yemeğe özgü pişmiş → çiğ ana bileşen dönüşümü (çorba suyu, pilavın su çekmesi, etin pişme kaybı vb.)
+const RAW_DISH = { corba:0.15, ezogelin:0.15, yayla:0.4, tavukcorba:0.15, domcorba:0.5, iskembe:0.3, fasulye:0.35, nohut:0.35, piyaz:0.35,
+  tavuk:0.9, kofte:1.2, adana:1.4, tas:1.0, doner:1.4, tdoner:1.3, tandir:1.4, izgaratavuk:1.3, manti:0.4, firinmakarna:0.35,
+  sutlac:0.8, kazandibi:0.8, cacik:0.7, haydari:0.8, menemen:0.6, karni:0.9, imam:1.0, turlu:1.0, taze:1.0, oturtma:1.0,
+  kizartma:1.6, pure:0.8, ayran:0.5 };
+let RAW_BY_NAME = null;
+function rawFactor(it){
+  if (Number(it.raw) > 0) return Number(it.raw);
+  if (!RAW_BY_NAME) { RAW_BY_NAME = {}; Object.entries(DISH).forEach(([k, d]) => { RAW_BY_NAME[norm(d[0])] = RAW_DISH[k] ?? MAINS[d[1]].raw; }); }
+  return RAW_BY_NAME[norm(it.name)] ?? (MAINS[it.main] || MAINS.diger).raw;
+}
+const rawKg = it => (Number(it.kg) || 0) * rawFactor(it);
+const co2Of = (it, F) => rawKg(it) * (F[it.main] || F.diger).co2;
+const tlOf  = (it, F) => rawKg(it) * (F[it.main] || F.diger).tl;
+const originOf = it => (MAINS[it.main] || MAINS.diger).origin;
+
+/* =========================================================
+   Storage + accounts
+   ========================================================= */
+const lsGet = k => { try { return localStorage.getItem(k); } catch(e) { return null; } };
+const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch(e) {} };
+const lsDel = k => { try { localStorage.removeItem(k); } catch(e) {} };
+const ssGet = k => { try { return sessionStorage.getItem(k); } catch(e) { return null; } };
+const ssSet = (k, v) => { try { sessionStorage.setItem(k, v); } catch(e) {} };
+const ssDel = k => { try { sessionStorage.removeItem(k); } catch(e) {} };
+const TOKEN_KEY = 'bereket.token';
+let TOKEN = ssGet(TOKEN_KEY) || lsGet(TOKEN_KEY);
+let CACHE = {};   // kullanıcı adı → { role, data }: kendi hesabın + ilçendeki hesaplar (sunucudan)
+const roleOf = u => CACHE[u]?.role || (u === user ? role : 'restoran');
+
+/* ---------- Claude artifact içinde: aynı API, Claude'un paylaşımlı veritabanıyla ----------
+   Vercel'de window.claude yoktur ve istekler /api/... sunucu fonksiyonlarına gider.
+   Claude artifact'inde aynı uç noktalar burada, Claude veritabanı (db) ve Claude (sample) ile yanıtlanır;
+   aynı Claude hesabıyla açılan telefon ve bilgisayar aynı veriyi görür. */
+const LOCAL = typeof window.claude?.use === 'function';
+const DEVICE_ID = (() => { let d = ssGet('bereket.dev') || lsGet('bereket.dev'); if (!d) { d = Math.random().toString(36).slice(2, 10); lsSet('bereket.dev', d); } ssSet('bereket.dev', d); return d; })();
+const LS = (() => {
+  let db = null, ready = null, sampleP = null;
+  const C = { accounts:{}, appdata:{}, photos:{} };
+  const key = s => 'k' + [...new TextEncoder().encode(String(s))].map(b => b.toString(16).padStart(2, '0')).join('');
+  const clone = v => JSON.parse(JSON.stringify(v));
+  const persistLocal = () => { try { localStorage.setItem('bereket.localdb', JSON.stringify({ accounts:C.accounts, appdata:C.appdata })); } catch (e) {} };
+  function init(){
+    if (ready) return ready;
+    ready = (async () => {
+      try { db = await window.claude.use('db'); } catch (e) { db = null; }
+      if (db) {
+        await Promise.all(['accounts', 'appdata'].map(c => new Promise(done => {
+          let first = true; const finish = () => { if (first) { first = false; done(); } };
+          db.collection('bk_' + c).onSnapshot(snap => {
+            const m = {}; snap.docs.forEach(d => { const v = d.data(); if (v) m[d.id] = clone(v); });
+            C[c] = m; finish();
+          }, () => finish());
+          setTimeout(finish, 8000);
+        })));
+      } else {
+        try { const s = JSON.parse(localStorage.getItem('bereket.localdb') || 'null'); if (s) { C.accounts = s.accounts || {}; C.appdata = s.appdata || {}; } } catch (e) {}
+      }
+    })();
+    return ready;
+  }
+  async function put(c, id, val){
+    C[c][id] = clone(val);
+    if (db) await db.collection('bk_' + c).doc(id).set(val); else if (c !== 'photos') persistLocal();
+  }
+  const acct = u => C.accounts[key(u)] || null;
+  const dataOf = u => C.appdata[key(u)]?.data || null;
+  async function writeData(u, d){ await put('appdata', key(u), { username:u, data:d }); }
+  async function hash(pw, salt){ const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(salt + ':' + pw)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join(''); }
+  const tokenFor = (u, r) => btoa(unescape(encodeURIComponent(JSON.stringify({ u, r, exp:Date.now() + 30 * 864e5 })))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '') + '.local';
+  function who(){
+    try { const p = JSON.parse(decodeURIComponent(escape(atob(TOKEN.split('.')[0].replace(/-/g, '+').replace(/_/g, '/'))))); return p.exp > Date.now() ? acct(p.u) : null; } catch (e) { return null; }
+  }
+  const E = (code, extra) => { throw { code, ...(extra || {}) }; };
+  const valid = (r, d) => d && typeof d === 'object' && d.profile && (r !== 'restoran' || (Array.isArray(d.entries) && Array.isArray(d.pickups)));
+  function forOtherRestaurant(d){
+    return { profile:{ name:d.profile?.name || '', type:d.profile?.type || '', district:d.profile?.district || '' },
+      entries:(d.entries || []).map(e => ({ id:e.id, date:e.date, items:(e.items || []).filter(i => !i.picked).map(i => ({ kg:i.kg, route:i.route, main:i.main, type:i.type, name:'' })) })).filter(e => e.items.length),
+      pickups:(d.pickups || []).slice(-40), ready:d.ready || null };
+  }
+  function forMunicipality(d){ const p = { ...(d.profile || {}) }; delete p.monthly; delete p.menu; return { ...d, profile:p }; }
+  const muniProfile = d => { const p = d.profile || {}; return { profile:{ name:p.name, district:p.district, collectTime:p.collectTime, onlyReady:!!p.onlyReady, mealKg:p.mealKg } }; };
+  function mergePickups(server, client){
+    if (!server) return client;
+    const have = new Set((client.pickups || []).map(p => p.id)), extra = (server.pickups || []).filter(p => !have.has(p.id));
+    if (!extra.length) return client;
+    const ids = new Set(extra.map(p => p.id)), byId = new Map((server.entries || []).map(e => [e.id, e]));
+    (client.entries || []).forEach(e => { const s = byId.get(e.id); if (!s) return; (e.items || []).forEach((it, i) => { const si = s.items && s.items[i]; if (!it.picked && si && ids.has(si.picked)) it.picked = si.picked; }); });
+    client.pickups = [...(client.pickups || []), ...extra];
+    if (server.ready == null) client.ready = null;
+    return client;
+  }
+  const b64ToBlob = async im => (await fetch('data:' + im.type + ';base64,' + im.data)).blob();
+  async function sampler(){ if (!sampleP) sampleP = window.claude.use('sample').catch(() => null); return sampleP; }
+
+  return async function localApi(path, { method = 'GET', body = {} } = {}){
+    const [p, qs] = path.split('?');
+    if (p === '/api/ai') {
+      const s = await sampler();
+      if (method === 'GET') { const lim = s ? await s.limits().catch(() => null) : null; return { configured: !!(s && lim?.images) }; }
+      if (!s) E('not_configured');
+      const images = await Promise.all((body.images || []).slice(0, 3).map(b64ToBlob));
+      try { const r = await s(String(body.prompt || ''), images.length ? { images } : {}); return { text:r.text }; }
+      catch (e) { E(e?.code === 'not_granted' ? 'not_configured' : (e?.code || 'upstream_error')); }
+    }
+    await init();
+    if (p === '/api/auth') {
+      const u = norm(body.username), pw = String(body.password || ''), r = body.role === 'belediye' ? 'belediye' : 'restoran';
+      if (body.action === 'signup') {
+        if (!/^[a-z0-9çğıöşü._@-]{3,60}$/.test(u)) E('invalid_username');
+        if (pw.length < 6) E('weak_password');
+        if (!valid(r, body.data)) E('invalid_data');
+        if (acct(u)) E('exists');
+        const salt = uid() + uid();
+        await put('accounts', key(u), { username:u, role:r, district_key:norm(body.data.profile.district), salt, hash:await hash(pw, salt) });
+        await writeData(u, body.data);
+        return { token:tokenFor(u, r), user:{ u, role:r } };
+      }
+      const a = acct(u);
+      if (!a || (await hash(pw, a.salt)) !== a.hash) E('bad_credentials');
+      if (a.role !== r) E('role_mismatch', { role:a.role });
+      return { token:tokenFor(u, a.role), user:{ u, role:a.role } };
+    }
+    if (p === '/api/demo') {
+      const DEMO = { ornek:'restoran', kampus:'restoran', sifa:'restoran', keyif:'restoran', kagithane:'belediye' };
+      const v = String(body.v || ''), district = String(body.district || '').trim();
+      for (const a of body.accounts || []) {
+        const r = DEMO[a.u]; if (!r || a.role !== r || !valid(r, a.data)) continue;
+        if (district && r === 'restoran') a.data.profile.district = district;
+        let ac = acct(a.u);
+        if (!ac) { const salt = uid(); ac = { username:a.u, role:r, district_key:norm(a.data.profile.district), salt, hash:await hash('bereket', salt) }; }
+        const stale = ac.demo_v !== v, moved = district && r === 'restoran' && norm(district) !== ac.district_key;
+        if (!dataOf(a.u) || (r === 'restoran' && (stale || moved))) await writeData(a.u, a.data);
+        if (ac.demo_v !== v || moved || !acct(a.u)) await put('accounts', key(a.u), { ...ac, demo_v:v, ...(r === 'restoran' ? { district_key:norm(a.data.profile.district) } : {}) });
+      }
+      return { ok:true };
+    }
+    const me = who(); if (!me) E('session_expired');
+    const district = () => Object.values(C.accounts).filter(a => a.district_key === me.district_key && a.username !== me.username);
+    if (p === '/api/data' && method === 'GET') {
+      return { me:{ u:me.username, role:me.role, data:clone(dataOf(me.username)) },
+        district: district().filter(a => dataOf(a.username)).map(a => { const d = clone(dataOf(a.username));
+          return { u:a.username, role:a.role, data: a.role === 'belediye' ? muniProfile(d) : me.role === 'restoran' ? forOtherRestaurant(d) : forMunicipality(d) }; }) };
+    }
+    if (p === '/api/data' && method === 'PUT') {
+      if (!valid(me.role, body.data)) E('invalid_data');
+      const saved = me.role === 'restoran' ? mergePickups(clone(dataOf(me.username)), clone(body.data)) : clone(body.data);
+      await writeData(me.username, saved);
+      const k = norm(saved.profile.district);
+      if (k && k !== me.district_key) await put('accounts', key(me.username), { ...me, district_key:k });
+      return { data:saved };
+    }
+    if (p === '/api/collect') {
+      if (me.role !== 'belediye') E('forbidden');
+      const by = dataOf(me.username)?.profile?.name || 'Belediye', out = {};
+      for (const u of body.targets || []) {
+        const a = acct(u); if (!a || a.role !== 'restoran' || a.district_key !== me.district_key) { out[u] = 0; continue; }
+        const d = clone(dataOf(u)), groups = {}; let total = 0;
+        (d.entries || []).forEach(e => (e.items || []).forEach(it => { if (!it.picked) (groups[it.route] ||= []).push(it); }));
+        Object.entries(groups).forEach(([route, items]) => { const id = uid(), kg = r1(sum(items, i => Number(i.kg) || 0)); items.forEach(i => i.picked = id); (d.pickups ||= []).push({ id, date:body.date, route, kg, created:body.date + 'T' + body.time, by }); total += kg; });
+        if (total) { d.ready = null; await writeData(u, d); }
+        out[u] = r1(total);
+      }
+      return { collected:out };
+    }
+    if (p === '/api/feed') {
+      const users = me.role === 'belediye' ? Object.values(C.accounts).filter(a => a.district_key === me.district_key && a.role === 'restoran').map(a => a.username) : [me.username];
+      const feed = [];
+      users.forEach(u => { const d = dataOf(u); if (!d) return; (d.entries || []).forEach(e => { if (e.at) feed.push({ u, rname:d.profile?.name || u, id:e.id, date:e.date, meal:e.meal, at:e.at, dev:e.dev || null, source:e.source, summary:e.summary || '', tip:e.tip || '', photo:e.photo || null, prices:d.profile?.prices || {}, items:clone(e.items || []) }); }); });
+      feed.sort((a, b) => String(b.at).localeCompare(String(a.at)));
+      return { feed:feed.slice(0, 20) };
+    }
+    if (p === '/api/photo' && method === 'POST') {
+      if (me.role !== 'restoran') E('forbidden');
+      const im = body.image || {}; if (!im.data || im.data.length > 240000) E('image_rejected');
+      const id = uid() + uid();
+      await put('photos', id, { username:me.username, type:im.type, data:im.data });
+      return { id };
+    }
+    if (p === '/api/photo') {
+      const id = new URLSearchParams(qs || '').get('id');
+      let ph = C.photos[id];
+      if (!ph && db) { const s = await db.collection('bk_photos').doc(id).get(); if (s.exists) ph = C.photos[id] = clone(s.data()); }
+      if (!ph) E('not_found');
+      const owner = acct(ph.username);
+      if (ph.username !== me.username && !(me.role === 'belediye' && owner?.district_key === me.district_key)) E('not_found');
+      return { type:ph.type, data:ph.data };
+    }
+    E('not_found');
+  };
+})();
+const localApi = LS;
+
+/* ---------- Sunucu (Vercel /api) ---------- */
+async function api(path, { method = 'GET', body, signal } = {}){
+  if (LOCAL) return localApi(path, { method, body, signal });
+  let r;
+  try {
+    r = await fetch(path, { method, signal, headers:{ 'Content-Type':'application/json', ...(TOKEN ? { Authorization:'Bearer ' + TOKEN } : {}) }, body: body === undefined ? undefined : JSON.stringify(body) });
+  } catch (e) {
+    if (e?.name === 'AbortError') throw { code:'cancelled' };
+    throw { code:'network' };
+  }
+  let out = {}; try { out = await r.json(); } catch (e) {}
+  if (!r.ok) throw { code: out.error || ('http_' + r.status), status:r.status, ...out };
+  return out;
+}
+function sessionLost(){ toast('Oturumunuzun süresi doldu. Lütfen yeniden giriş yapın.'); logout(); }
+const DEFAULT_R = { name:'', type:'Restoran', district:'Kağıthane', portionKg:0.3, mealKg:0.4, prices:{}, menu:{}, monthly:{} };
+const DEFAULT_B = { name:'', district:'Kağıthane', collectTime:'16:00', mealKg:0.4 };
+function blankFor(role){ return role === 'belediye' ? { profile:{...DEFAULT_B} } : { profile:{...DEFAULT_R}, entries:[], pickups:[], ready:null }; }
+function normalize(r, s){
+  if (!s) return blankFor(r);
+  if (r === 'belediye') { s.profile = {...DEFAULT_B, ...s.profile}; return s; }
+  s.profile = {...DEFAULT_R, ...s.profile}; s.entries ||= []; s.pickups ||= []; s.ready ||= null;
+  s.entries.forEach(e => (e.items ||= []).forEach(it => { if (!it.main || !MAINS[it.main]) { it.main = LEGACY[it.main] || LEGACY[it.category] || 'diger'; delete it.category; } }));
+  return s;
+}
+function loadData(u){ return u === user && S ? S : (CACHE[u]?.data || blankFor(roleOf(u))); }
+function saveData(u, d){ if (u === user) { S = d; save(); } }
+
+/* Kayıt: değişiklikler kısa bir gecikmeyle sunucuya gönderilir. */
+let saving = false, dirty = false, saveTimer = null, lastDistrict = '';
+function save(){
+  if (!user || !S) return;
+  CACHE[user] = { role, data:S };
+  dirty = true; clearTimeout(saveTimer); saveTimer = setTimeout(flush, 350);
+}
+async function flush(){
+  if (saving || !dirty || !user) return;
+  dirty = false; saving = true;
+  const snap = JSON.parse(JSON.stringify(S)), before = lastDistrict;
+  try {
+    const r = await api('/api/data', { method:'PUT', body:{ data:snap } });
+    if (!dirty && r?.data) adoptOwn(r.data);
+    lastDistrict = norm(snap.profile.district);
+    if (lastDistrict !== before) refresh();
+  } catch (e) {
+    if (e.code === 'session_expired') return sessionLost();
+    dirty = true; toast('Kaydedilemedi, bağlantı bekleniyor…'); setTimeout(flush, 5000);
+  } finally {
+    saving = false;
+    if (dirty) flush();
+  }
+}
+function adoptOwn(data){
+  const n = normalize(role, data);
+  const ids = x => (x.pickups || []).map(p => p.id).join(',');
+  if (role === 'restoran' && ids(n) !== ids(S)) { S = n; CACHE[user] = { role, data:S }; softRender(); }
+}
+/* İlçe verisini ve kendi verini sunucudan tazeler. */
+async function refresh(){
+  if (!user) return;
+  try {
+    const r = await api('/api/data');
+    const next = {};
+    (r.district || []).forEach(x => { next[x.u] = { role:x.role, data:normalize(x.role, x.data) }; });
+    if (!dirty && !saving) S = normalize(role, r.me?.data || null);
+    next[user] = { role, data:S };
+    CACHE = next; lastDistrict = norm(S.profile.district);
+    softRender();
+  } catch (e) { if (e.code === 'session_expired') sessionLost(); }
+}
+function softRender(){
+  if (!user || busy || planState === 'loading') return;
+  if (['kaydet', 'profil', 'bprofil'].includes(view)) return;
+  const ae = document.activeElement;
+  if (ae && /INPUT|SELECT|TEXTAREA/.test(ae.tagName) && $('#view').contains(ae)) return;
+  render();
+}
+setInterval(() => { if (user && document.visibilityState === 'visible') refresh(); }, 30000);
+
+/* ---------- Canlı akış: telefondan yüklenen kayıt diğer cihazlarda anında görünür ---------- */
+let FEED = [], feedSeen = null, NEWIDS = new Set(), PHOTOS = {}, liveTimer = null, feedBusy = false;
+async function pollFeed(){
+  if (!user || feedBusy) return;
+  feedBusy = true;
+  try {
+    const r = await api('/api/feed');
+    const list = r.feed || [], fresh = feedSeen ? list.filter(x => !feedSeen.has(x.id)) : [];
+    const photoArrived = list.some(x => x.photo && !FEED.find(y => y.id === x.id && y.photo));
+    FEED = list;
+    if (!feedSeen) feedSeen = new Set();
+    list.forEach(x => feedSeen.add(x.id));
+    const others = fresh.filter(x => x.dev !== DEVICE_ID);
+    if (others.length) {
+      others.forEach(x => NEWIDS.add(x.id));
+      showLive(others[0], others.length);
+      await refresh();
+      if (['kaydet', 'profil', 'bprofil'].includes(view)) updateFeedPanel();
+    } else if (fresh.length || photoArrived) updateFeedPanel();
+  } catch (e) { if (e.code === 'session_expired') sessionLost(); }
+  finally { feedBusy = false; }
+}
+setInterval(() => { if (user && document.visibilityState === 'visible') pollFeed(); }, 5000);
+function feedTotals(x){
+  const F = factorsOf({ prices:x.prices }), its = x.items || [];
+  return { kg:sum(its, i => Number(i.kg) || 0), tl:sum(its, i => tlOf(i, F)), co:sum(its, i => co2Of(i, F)), F };
+}
+const feedTitle = x => { const n = [...new Set((x.items || []).map(i => i.name || MAINS[i.main]?.name || 'Kalem'))]; return n.slice(0, 2).join(', ') + (n.length > 2 ? ` +${n.length - 2}` : ''); };
+function ago(at){
+  const m = Math.round((Date.now() - new Date(at).getTime()) / 60000);
+  if (m < 1) return 'az önce'; if (m < 60) return m + ' dk önce';
+  const d = new Date(at); return (d.toDateString() === new Date().toDateString() ? '' : dm(iso(d)) + ' ') + pad(d.getHours()) + ':' + pad(d.getMinutes());
+}
+const camIcon = s => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC.kaydet}</svg>`;
+function feedRows(n){
+  return FEED.slice(0, n).map(x => { const t = feedTotals(x); return `<button class="feed-row" data-action="feed-open" data-id="${esc(x.id)}">
+    <span class="th">${x.photo ? `<img data-photo="${esc(x.photo)}" alt="">` : camIcon(22)}</span>
+    <span style="min-width:0"><strong>${role === 'belediye' ? esc(x.rname) + ': ' : ''}${esc(feedTitle(x))} ${NEWIDS.has(x.id) ? '<span class="chip new">Yeni</span>' : ''}</strong>
+      <span class="sub">${fmt(t.kg)} kg · ${fmt(t.co, t.co < 10 ? 1 : 0)} kg CO₂e · ${ago(x.at)}${x.source === 'ai' ? ' · fotoğraf analizi' : ''}</span></span>
+    <span class="tl">${fmtTL(t.tl)}</span></button>`; }).join('');
+}
+function feedPanel(){
+  return `<section class="section panel" id="feedPanel">
+    <div class="section-head"><h2>Canlı yüklemeler</h2><span class="livedot">canlı</span></div>
+    ${FEED.length ? `<div class="feed">${feedRows(5)}</div>` : `<p class="small muted">${role === 'belediye' ? 'Restoranlar telefondan fotoğraflı kayıt ekledikçe burada anında görünür.' : 'Telefondan fotoğrafla kayıt eklediğinizde, bu hesabın açık olduğu diğer cihazlarda burada anında görünür.'}</p>`}
+  </section>`;
+}
+function updateFeedPanel(){ const el = $('#feedPanel'); if (el) { el.outerHTML = feedPanel(); loadPhotos(); } }
+async function photoURL(id){
+  if (PHOTOS[id]) return PHOTOS[id];
+  const p = api('/api/photo?id=' + encodeURIComponent(id)).then(r => 'data:' + r.type + ';base64,' + r.data).catch(() => { delete PHOTOS[id]; return null; });
+  PHOTOS[id] = p; return p;
+}
+function loadPhotos(){ $$('img[data-photo]').forEach(async img => { if (img.src) return; const u = await photoURL(img.dataset.photo); if (u) img.src = u; }); }
+function showLive(x, n){
+  const t = feedTotals(x), el = $('#live');
+  el.innerHTML = `<span class="th">${x.photo ? `<img data-photo="${esc(x.photo)}" alt="">` : camIcon(22)}</span>
+    <span style="min-width:0"><b>${role === 'belediye' ? esc(x.rname) + ': ' : ''}${esc(feedTitle(x))} yüklendi</b><span>${fmt(t.kg)} kg · ${fmtTL(t.tl)} · ${fmt(t.co, t.co < 10 ? 1 : 0)} kg CO₂e${n > 1 ? ` · +${n - 1} kayıt daha` : ''}</span></span>
+    <button data-action="feed-open" data-id="${esc(x.id)}">Gör</button>`;
+  el.hidden = false; loadPhotos();
+  clearTimeout(liveTimer); liveTimer = setTimeout(() => { el.hidden = true; }, 12000);
+}
+function openDetail(id){
+  const x = FEED.find(y => y.id === id); if (!x) return;
+  NEWIDS.delete(id); $('#live').hidden = true;
+  const t = feedTotals(x), og = { h:0, b:0, k:0 };
+  (x.items || []).forEach(i => og[originOf(i)] += co2Of(i, t.F));
+  $('#detailBody').innerHTML = `<div class="grab"></div>
+    <div class="row" style="justify-content:space-between"><div><h2>${esc(role === 'belediye' ? x.rname : feedTitle(x))}</h2><p class="small muted">${DAYS[dow(x.date)]}, ${dm(x.date)} · ${esc(x.meal || '')} · ${ago(x.at)} yüklendi</p></div><button class="iconbtn" data-action="detail-close" aria-label="Kapat">×</button></div>
+    <div class="detail-photo">${x.photo ? `<img data-photo="${esc(x.photo)}" alt="Yüklenen atık fotoğrafı">` : 'Bu kayıtta fotoğraf yok'}</div>
+    <div class="bigtri" style="margin-top:0">
+      <div><b class="num">${fmt(t.kg)} kg</b><span>atık</span></div>
+      <div><b class="num">${fmt(t.co, t.co < 10 ? 1 : 0)} kg</b><span>CO₂e karbon</span></div>
+      <div><b class="num">${fmtTL(t.tl)}</b><span>maliyet kaybı</span></div>
+    </div>
+    <div>${['h','b','k'].filter(o => og[o] > 0).map(o => `<div class="pbar" style="border:0; padding:3px 0"><div class="top"><span>${ORIGIN[o]}</span><span class="num">karbonun ${P_(t.co ? og[o] / t.co * 100 : 0)}</span></div><div class="track"><i style="width:${t.co ? og[o] / t.co * 100 : 0}%; background:${ORIGIN_COLOR[o]}"></i></div></div>`).join('')}</div>
+    ${x.summary ? `<div class="ai-note small"><strong>Yapay zekâ:</strong> ${esc(x.summary)}${x.tip ? `<br><strong>Öneri:</strong> ${esc(x.tip)}` : ''}</div>` : ''}
+    <ul class="list">${(x.items || []).map(i => { const o = originOf(i); return `<li><div style="min-width:0"><strong>${esc(i.name || MAINS[i.main]?.name)}</strong> <span class="chip ${o}">${ORIGIN[o]}</span>
+      <div class="small muted num" style="margin-top:3px">${fmt(i.kg)} kg ${i.src === 'foto' ? '(fotoğraf tahmini)' : '(elle/tartılarak)'} · ${TYPES[i.type] || ''} · ${fmt(co2Of(i, t.F), 1)} kg CO₂e</div>
+      <div class="small">→ ${ROUTES[i.route]?.name || ''}</div></div><span class="num">${fmtTL(tlOf(i, t.F))}</span></li>`; }).join('')}</ul>`;
+  const dlg = $('#detail'); if (!dlg.open) dlg.showModal(); loadPhotos();
+  updateFeedPanel();
+}
+$('#detail').addEventListener('click', e => { if (e.target === $('#detail')) $('#detail').close(); });
+
+document.addEventListener('visibilitychange', () => { if (user && document.visibilityState === 'visible') refresh(); });
+
+function restaurantsIn(district){
+  return Object.entries(CACHE).filter(([u, c]) => c.role === 'restoran' && norm(c.data.profile.district) === norm(district))
+    .map(([u, c]) => ({ u, data: u === user ? S : c.data }));
+}
+function municipalityFor(district){
+  if (role === 'belediye' && S && norm(S.profile.district) === norm(district)) return S.profile;
+  const e = Object.values(CACHE).find(c => c.role === 'belediye' && norm(c.data.profile.district) === norm(district));
+  return e ? e.data.profile : null;
+}
+
+/* Daily collection: everything not yet collected leaves today, grouped by stream */
+function collectFor(u, data, by){
+  const groups = {};
+  data.entries.forEach(e => e.items.forEach(it => { if (!it.picked) (groups[it.route] ||= []).push(it); }));
+  const t = nowHM(); let total = 0;
+  Object.entries(groups).forEach(([route, items]) => {
+    const id = uid(), kg = r1(sum(items, i => i.kg));
+    items.forEach(i => i.picked = id);
+    data.pickups.push({ id, date:today(), route, kg, created:today() + 'T' + t, by });
+    total += kg;
+  });
+  data.ready = null; saveData(u, data);
+  return total;
+}
+
+/* =========================================================
+   Session state
+   ========================================================= */
+let user = null, role = null, S = null, booting = !!TOKEN;
+let view = 'kaydet';
+let range = 7;
+let authStep = 'role', authRole = 'restoran', authMode = 'login', signupRole = 'restoran', authErr = '', authBusy = false, lastUser = '';
+let draft = newDraft();
+let sampleFn = null, imagesOK = false, aiReady = false, aiBlocked = false, imgMax = 3;
+let busy = null;
+let planText = '', planState = 'idle', planCtl = null, planErr = '';
+
+function newDraft(){ return { date: today(), meal:'Öğle', menu:'', container:'otomatik', items:[], summary:'', tip:'', source:'manual', photos:[], analysis:null, error:'', result:null }; }
+const rowsOf = data => data.entries.flatMap(e => e.items.map(it => ({ ...it, date:e.date, meal:e.meal })));
+const allRows = () => rowsOf(S);
+const between = (rows, a, b) => rows.filter(r => r.date >= a && r.date <= b);
+
+let toastT;
+function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2600); }
+
+/* =========================================================
+   Render
+   ========================================================= */
+function renderTabs(){
+  const tabs = role === 'belediye' ? B_TABS : R_TABS;
+  const el = $('#tabs');
+  el.style.setProperty('--n', tabs.length);
+  el.innerHTML = tabs.map(k => `<button data-nav="${k}" class="${k === 'kaydet' ? 'fab' : ''}"><span class="ic">${icon(k, k === 'kaydet' ? 26 : 23)}</span>${TAB_LABEL[k]}</button>`).join('');
+}
+function render(){
+  const app = $('#app');
+  if (!user) { app.classList.add('auth'); $('#view').innerHTML = vLogin(); return; }
+  app.classList.remove('auth');
+  renderTabs();
+  $$('[data-nav]').forEach(b => b.setAttribute('aria-current', b.dataset.nav === view ? 'page' : 'false'));
+  $('#title').textContent = TITLES[view];
+  $('#bizname').textContent = S.profile.name || '@' + user;
+  const V = { pano:vPano, kaydet:vKaydet, tahmin:vTahmin, toplama:vToplama, tasarruf:vTasarruf, profil:vProfil, bugun:vBugun, restoranlar:vRestoranlar, akislar:vAkislar, btasarruf:vBtasarruf, bprofil:vBprofil };
+  trackCtx = null;
+  $('#view').innerHTML = V[view]();
+  if (trackCtx && !rafId) rafId = requestAnimationFrame(tick);
+  loadPhotos();
+}
+function scrollTop(){ window.scrollTo(0, 0); $('#app').scrollTo?.(0, 0); }
+function go(v){ view = v; render(); scrollTop(); $('#view').focus({ preventScroll:true }); }
+$('#app').addEventListener('scroll', () => $('#appbar').classList.toggle('scrolled', $('#app').scrollTop > 4));
+window.addEventListener('scroll', () => $('#appbar').classList.toggle('scrolled', window.scrollY > 4));
+
+/* Stacked daily bar chart; rows need {date, kg, [field]} */
+function dailyChart(start, end, rows, field, colors, order, labels){
+  const days = []; for (let d = start; d <= end; d = addDays(d, 1)) days.push(d);
+  const by = {};
+  rows.forEach(r => { by[r.date] ||= {}; by[r.date][r[field]] = (by[r.date][r[field]] || 0) + r.kg; });
+  const niceMax = Math.ceil(Math.max(1, ...days.map(d => sum(Object.values(by[d] || {})))) / 4) * 4;
+  const W = 360, H = 200, L = 28, B = 22, T = 6;
+  const step = (W - L) / days.length, bw = Math.min(30, step * 0.66);
+  let out = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Günlük grafik">`;
+  for (let i = 0; i <= 4; i++) {
+    const v = niceMax * i / 4, y = H - B - (H - B - T) * i / 4;
+    out += `<line x1="${L}" x2="${W}" y1="${y}" y2="${y}" style="stroke:var(--line)" stroke-width="1"/><text x="${L - 5}" y="${y + 3.5}" text-anchor="end">${fmt(v, 0)}</text>`;
+  }
+  days.forEach((d, i) => {
+    const x = L + i * step + (step - bw) / 2; let y = H - B;
+    order.forEach(k => {
+      const v = (by[d] || {})[k] || 0; if (!v) return;
+      const h = (H - B - T) * v / niceMax; y -= h;
+      out += `<rect x="${x}" y="${y}" width="${bw}" height="${h}" rx="2" style="fill:${colors[k]}"><title>${dm(d)} · ${labels[k]}: ${fmt(v)} kg</title></rect>`;
+    });
+    if (days.length <= 10 || i % 6 === 0 || i === days.length - 1)
+      out += `<text x="${x + bw / 2}" y="${H - 6}" text-anchor="middle">${days.length <= 10 ? SHORT[dow(d)] : dm(d)}</text>`;
+  });
+  return out + '</svg>';
+}
+// Türkçe yüzde eki: %3,2'si, %40'ı, %25'i, %100'ü
+function sfx(numStr, form){
+  const s = String(numStr).replace(/[^0-9,]/g, ''); const d = s.replace(/,/g, '');
+  const ones = { '1':'i','2':'si','3':'ü','4':'ü','5':'i','6':'sı','7':'si','8':'i','9':'u' };
+  const tens = { '1':'u','2':'si','3':'u','4':'ı','5':'si','6':'ı','7':'i','8':'i','9':'ı' };
+  let base;
+  const last = d.slice(-1);
+  if (last && last !== '0') base = ones[last];
+  else if (/^0+$/.test(d)) base = 'ı';
+  else if (/[1-9]00$/.test(d) && d.length === 3) base = 'ü';
+  else if (/[1-9]0$/.test(d)) base = tens[d.slice(-2, -1)];
+  else base = 'i';
+  if (form === 'ni') return base + 'n' + base.slice(-1).replace('s', '');
+  return base;
+}
+const P_ = (n, digits = 0, form) => { const t = fmt(n, digits); return '%' + t + "'" + sfx(t, form); };
+const legend = (labels, colors) => `<div class="legend">${Object.entries(labels).map(([k, v]) => `<span><i class="dot" style="background:${colors[k]}"></i>${v}</span>`).join('')}</div>`;
+
+/* Origin split: weight vs carbon */
+function originSplit(rows, F){
+  const kg = { h:0, b:0, k:0 }, co = { h:0, b:0, k:0 };
+  rows.forEach(r => { const o = originOf(r); kg[o] += r.kg; co[o] += co2Of(r, F); });
+  const tk = sum(Object.values(kg)) || 1, tc = sum(Object.values(co)) || 1;
+  const bar = m => `<div class="split">${['h','b','k'].map(o => m[o] ? `<i style="width:${(m === kg ? kg[o] / tk : co[o] / tc) * 100}%; background:${ORIGIN_COLOR[o]}"></i>` : '').join('')}</div>`;
+  const hk = Math.round(kg.h / tk * 100), hc = Math.round(co.h / tc * 100);
+  return { hk, hc, kg, co, html:`
+    <p>${hk > 0 ? `Atığın <strong>${P_(hk)}</strong> hayvansal kaynaklı, ama karbon ayak izinin <strong>${P_(hc)}</strong> ondan geliyor.` : 'Bu dönemde hayvansal kaynaklı atık yok.'}</p>
+    <div class="splitrow"><div class="row"><span>Ağırlık</span><span class="num muted">${fmt(sum(Object.values(kg)))} kg</span></div>${bar(kg)}</div>
+    <div class="splitrow"><div class="row"><span>Karbon</span><span class="num muted">${fmt(sum(Object.values(co)), 0)} kg CO₂e</span></div>${bar(co)}</div>
+    ${legend(ORIGIN, ORIGIN_COLOR)}` };
+}
+
+/* =========================================================
+   Login / signup
+   ========================================================= */
+function vLogin(){
+  if (booting) return `<div class="login"><div class="login-top"><div class="logo">${NAZAR(40)}</div><h2>Bereket</h2><p>Oturum açılıyor…</p></div></div>`;
+  if (authStep === 'role') return `<div class="login">
+    <div class="login-top">
+      <div class="logo">${NAZAR(40)}</div>
+      <h2>Bereket</h2>
+      <p>Mutfaktaki israfı ölç, kaynağında durdur, kalanı şehre kazandır.</p>
+    </div>
+    <div class="role-pick">
+      <button class="role-card" data-pick="restoran"><span class="ri">${icon('restoranlar', 28)}</span><span><b>Restoran girişi</b><small>Yemek ekle, israfının karbonunu ve maliyetini gör</small></span><span class="arrow">›</span></button>
+      <button class="role-card" data-pick="belediye"><span class="ri">${icon('bugun', 28)}</span><span><b>Belediye girişi</b><small>Günlük taşımayı yönet, ilçedeki tasarrufu izle</small></span><span class="arrow">›</span></button>
+    </div>
+    <div class="login-foot"><p class="small muted">Hesaplar ve kayıtlar Bereket sunucusunda saklanır.</p></div>
+  </div>`;
+  const s = authMode === 'signup', b = authRole === 'belediye';
+  return `<div class="login">
+    <div class="login-top" style="padding-top:28px">
+      <button class="backbtn" data-action="auth-back"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Geri</button>
+      <h2>${b ? 'Belediye girişi' : 'Restoran girişi'}</h2>
+      <p>${b ? 'Belediye hesabınızla giriş yapın ya da ilçeniz için hesap oluşturun.' : 'Restoran hesabınızla giriş yapın ya da yeni hesap oluşturun.'}</p>
+    </div>
+    <form class="login-card" id="authForm" novalidate>
+      <div class="seg" role="group" aria-label="Giriş türü">
+        <button type="button" data-auth="login" aria-pressed="${!s}">Giriş yap</button>
+        <button type="button" data-auth="signup" aria-pressed="${s}">Hesap oluştur</button>
+      </div>
+      ${s ? `<label class="f">${b ? 'Belediye adı' : 'Restoran adı'}<input type="text" name="rname" autocomplete="organization" placeholder="${b ? 'Örn. Kağıthane Belediyesi' : 'Örn. Lezzet Lokantası'}" required></label>` : ''}
+      <label class="f">${b ? 'Belediye hesabı' : 'Restoran hesabı'}<input type="text" name="user" value="${esc(lastUser)}" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="kullanıcı adı veya e-posta" required></label>
+      <label class="f">Şifre<span class="pw"><input type="password" name="pw" autocomplete="${s ? 'new-password' : 'current-password'}" placeholder="${s ? 'En az 6 karakter' : 'Şifreniz'}" required><button type="button" data-action="toggle-pw">Göster</button></span></label>
+      ${s ? `<label class="f">Şifre tekrar<input type="password" name="pw2" autocomplete="new-password" required></label>
+        <div class="fields">
+          ${b ? '' : `<label class="f">İşletme türü<select name="type">${['Restoran','Okul / üniversite','Yurt','Hastane','Kamu kurumu','Otel','Şirket yemekhanesi'].map(t => `<option>${t}</option>`).join('')}</select></label>`}
+          <label class="f ${b ? 'wide' : ''}">İlçe<input type="text" name="district" value="Kağıthane"></label>
+        </div>` : ''}
+      <label class="check"><input type="checkbox" name="remember" checked>Beni hatırla</label>
+      ${authErr ? `<p class="err" role="alert">${esc(authErr)}</p>` : ''}
+      <button class="btn block" type="submit" ${authBusy ? 'disabled' : ''}>${s ? 'Hesabı oluştur' : 'Giriş yap'}</button>
+    </form>
+    <div class="login-foot">
+      <button class="link" data-action="demo-login" data-kind="${authRole}">Örnek ${b ? 'belediye' : 'restoran'} hesabıyla dene</button>
+    </div>
+  </div>`;
+}
+const AUTH_ERR = {
+  exists:'Bu hesap adı alınmış. Giriş yapın ya da başka bir ad seçin.',
+  invalid_username:'Hesap adı 3–60 karakter olmalı; yalnızca harf, rakam ve . _ @ - kullanılabilir.',
+  weak_password:'Şifre en az 6 karakter olmalı.',
+  bad_credentials:'Hesap adı veya şifre hatalı.',
+  not_configured:'Sunucu ayarları eksik (Vercel ortam değişkenleri). Kurulum rehberine bakın.',
+  network:'Sunucuya ulaşılamadı. İnternet bağlantınızı kontrol edin.'
+};
+async function submitAuth(form){
+  const f = form.elements; lastUser = f.user.value.trim();
+  const u = norm(f.user.value), pw = f.pw.value, remember = f.remember.checked;
+  authErr = '';
+  if (authMode === 'signup') {
+    signupRole = authRole; const rname = f.rname.value.trim(), b = signupRole === 'belediye';
+    if (!rname) authErr = b ? 'Belediye adını yazın.' : 'Restoran adını yazın.';
+    else if (u.length < 3) authErr = 'Hesap adı en az 3 karakter olmalı.';
+    else if (pw.length < 6) authErr = 'Şifre en az 6 karakter olmalı.';
+    else if (pw !== f.pw2.value) authErr = 'Şifreler eşleşmiyor.';
+    if (authErr) { render(); return; }
+    const data = blankFor(signupRole);
+    data.profile.name = rname; data.profile.district = f.district.value.trim() || 'Kağıthane';
+    if (!b) data.profile.type = f.type.value;
+    authBusy = true; render();
+    try {
+      const r = await api('/api/auth', { method:'POST', body:{ action:'signup', role:signupRole, username:u, password:pw, data } });
+      await startSession(r, remember);
+      toast('Hesabınız oluşturuldu. Hoş geldiniz!');
+    } catch (e) { authBusy = false; authErr = AUTH_ERR[e.code] || 'Bir sorun oluştu. Tekrar deneyin.'; render(); }
+  } else {
+    if (!u || !pw) { authErr = 'Hesap adını ve şifreyi girin.'; render(); return; }
+    authBusy = true; render();
+    try {
+      const r = await api('/api/auth', { method:'POST', body:{ action:'login', role:authRole, username:u, password:pw } });
+      await startSession(r, remember);
+    } catch (e) {
+      authBusy = false;
+      authErr = e.code === 'role_mismatch' ? (e.role === 'belediye' ? 'Bu bir belediye hesabı. Geri dönüp "Belediye girişi"ni seçin.' : 'Bu bir restoran hesabı. Geri dönüp "Restoran girişi"ni seçin.') : (AUTH_ERR[e.code] || 'Bir sorun oluştu. Tekrar deneyin.');
+      render();
+    }
+  }
+}
+async function startSession(r, remember){
+  TOKEN = r.token; ssSet(TOKEN_KEY, TOKEN); if (remember) lsSet(TOKEN_KEY, TOKEN); else lsDel(TOKEN_KEY);
+  user = r.user.u; role = r.user.role; S = null; CACHE = {}; dirty = false;
+  await refresh();
+  if (!S) S = blankFor(role);
+  authBusy = false; authErr = ''; booting = false;
+  view = role === 'belediye' ? 'bugun' : 'kaydet';
+  draft = newDraft(); planText = ''; planData = null; planState = 'idle'; sim.on = false;
+  FEED = []; feedSeen = null; NEWIDS = new Set();
+  render(); scrollTop(); pollFeed();
+}
+function logout(){
+  ssDel(TOKEN_KEY); lsDel(TOKEN_KEY); TOKEN = null; CACHE = {}; dirty = false; clearTimeout(saveTimer); FEED = []; feedSeen = null; NEWIDS = new Set(); $('#live').hidden = true;
+  user = null; role = null; S = null; draft = newDraft(); authStep = 'role'; authMode = 'login'; authErr = ''; authBusy = false; booting = false;
+  render(); scrollTop();
+}
+
+/* =========================================================
+   Demo data
+   ========================================================= */
+const DCAT = { corba:'Çorbalar', ana:'Ana yemekler', pilav:'Pilav & makarna', hamur:'Ekmek & hamur', salata:'Salata & meze', tatli:'Tatlı & meyve', kahvalti:'Kahvaltı', icecek:'İçecek' };
+const DISH = {
+  corba:['Mercimek çorbası','baklagil','corba'], ezogelin:['Ezogelin çorbası','baklagil','corba'], yayla:['Yayla çorbası','sut','corba'],
+  tavukcorba:['Tavuk suyu çorba','tavuk','corba'], domcorba:['Domates çorbası','sebze','corba'], iskembe:['İşkembe çorbası','dana','corba'],
+  tavuk:['Tavuk sote','tavuk','ana'], kofte:['Izgara köfte','dana','ana'], adana:['Adana kebap','kuzu','ana'], tas:['Tas kebabı','dana','ana'],
+  balik:['Fırın levrek','balik','ana'], hamsi:['Hamsi tava','balik','ana'], tdoner:['Tavuk döner','tavuk','ana'], doner:['Et döner','dana','ana'],
+  tandir:['Kuzu tandır','kuzu','ana'], karni:['Karnıyarık','sebze','ana'], imam:['İmam bayıldı','sebze','ana'], fasulye:['Kuru fasulye','baklagil','ana'],
+  nohut:['Nohut yemeği','baklagil','ana'], turlu:['Türlü','sebze','ana'], taze:['Taze fasulye','sebze','ana'], manti:['Mantı','tahil','ana'],
+  oturtma:['Patates oturtma','patates','ana'], izgaratavuk:['Izgara tavuk','tavuk','ana'],
+  pilav:['Pirinç pilavı','pirinc','pilav'], bulgur:['Bulgur pilavı','tahil','pilav'], makarna:['Makarna','tahil','pilav'],
+  firinmakarna:['Fırın makarna','tahil','pilav'], kizartma:['Patates kızartması','patates','pilav'], pure:['Patates püresi','patates','pilav'],
+  ekmek:['Ekmek','ekmek','hamur'], pide:['Pide','ekmek','hamur'], lahmacun:['Lahmacun','ekmek','hamur'], borek:['Su böreği','ekmek','hamur'], simit:['Simit','ekmek','hamur'],
+  salata:['Mevsim salata','sebze','salata'], coban:['Çoban salata','sebze','salata'], cacik:['Cacık','sut','salata'], haydari:['Haydari','sut','salata'],
+  piyaz:['Piyaz','baklagil','salata'], yogurt:['Yoğurt','sut','salata'], tursu:['Turşu','sebze','salata'],
+  sutlac:['Sütlaç','sut','tatli'], kazandibi:['Kazandibi','sut','tatli'], baklava:['Baklava','tatli','tatli'], revani:['Revani','tatli','tatli'],
+  kunefe:['Künefe','peynir','tatli'], meyve:['Meyve tabağı','meyve','tatli'], kabak:['Kabak tatlısı','sebze','tatli'],
+  peynir:['Beyaz peynir','peynir','kahvalti'], yumurta:['Haşlanmış yumurta','yumurta','kahvalti'], menemen:['Menemen','yumurta','kahvalti'],
+  zeytin:['Zeytin','sebze','kahvalti'], domsal:['Domates-salatalık','sebze','kahvalti'], recel:['Reçel & bal','meyve','kahvalti'],
+  ayran:['Ayran','sut','icecek'], meyvesuyu:['Meyve suyu','meyve','icecek']
+};
+const MENUS = {
+  lokanta:   { 1:['corba','fasulye','pilav','ekmek','salata'], 2:['corba','tavuk','makarna','ekmek'], 3:['corba','kofte','pilav','ekmek','sutlac'],
+               4:['corba','fasulye','pilav','ekmek','salata'], 5:['corba','tavuk','pilav','ekmek','sutlac'], 6:['corba','karni','makarna','ekmek','salata'] },
+  kebap:     { 1:['adana','lahmacun','pilav','ekmek','salata','ayran'], 2:['adana','lahmacun','ekmek','salata','ayran'], 3:['adana','pilav','ekmek','salata','kunefe'],
+               4:['adana','lahmacun','ekmek','salata','ayran'], 5:['adana','lahmacun','pilav','ekmek','salata','kunefe'], 6:['adana','lahmacun','ekmek','salata','kunefe'], 0:['adana','lahmacun','ekmek','salata','ayran'] },
+  yemekhane: { 1:['corba','tavuk','bulgur','ekmek','yogurt'], 2:['corba','fasulye','pilav','ekmek','salata'], 3:['corba','kofte','makarna','ekmek'],
+               4:['corba','balik','salata','ekmek','sutlac'], 5:['corba','tavuk','pilav','ekmek','yogurt'] },
+  hastane:   { 0:['corba','tavuk','bulgur','ekmek','yogurt'], 1:['corba','tavuk','pilav','ekmek','yogurt'], 2:['corba','balik','salata','ekmek'], 3:['corba','fasulye','bulgur','ekmek','yogurt'],
+               4:['corba','tavuk','makarna','ekmek','sutlac'], 5:['corba','kofte','pilav','ekmek','yogurt'], 6:['corba','karni','bulgur','ekmek','yogurt'] }
+};
+function genDemo({ seed, scale, menu, name, type, readyAt }){
+  const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const rb = (a, b) => a + rnd() * (b - a);
+  const M = MENUS[menu], entries = [], pickups = [];
+  for (let back = 27; back >= 0; back--) {
+    const date = addDays(today(), -back), w = dow(date);
+    const menuToday = M[w] || (back === 0 ? M[1] : null);
+    if (!menuToday) continue;
+    const f = (1 - 0.32 * (27 - back) / 27) * scale, items = [];
+    menuToday.forEach(key => {
+      const [nm, main] = DISH[key];
+      let fazla = rb(0, 0.5), tabak = rb(0.3, 1.0);
+      if (key === 'pilav' && w === 5) fazla = rb(2.2, 3.4);
+      if (key === 'corba' && w === 1) fazla = rb(1.5, 2.4);
+      if (key === 'ekmek') { fazla = rb(0.8, 1.6); tabak = rb(0.6, 1.2); }
+      if (key === 'makarna' && w === 6) fazla = rb(1.4, 2.2);
+      if (key === 'fasulye') tabak = rb(1.1, 1.8);
+      if (key === 'adana' && w === 1) fazla = rb(1.0, 1.8);
+      if (key === 'adana') tabak = rb(0.3, 0.7);
+      if (key === 'lahmacun') tabak = rb(0.8, 1.5);
+      if (key === 'kofte') fazla = rb(0.5, 1.1);
+      if (key === 'yogurt' && menu === 'hastane') tabak = rb(1.0, 1.6);
+      const push = (t, kg) => { kg = r1(kg * f); if (kg >= 0.2) items.push({ name:nm, main, type:t, kg, route:defaultRoute(main, t), picked:null, src: rnd() < 0.7 ? 'elle' : 'foto' }); };
+      push('fazla', fazla); push('tabak', tabak);
+      if (key === 'salata' || key === 'karni') push('hazirlik', rb(0.5, 1.1));
+    });
+    if (rnd() < 0.12) items.push({ name:'Domates', main:'sebze', type:'bozuk', kg:r1(rb(0.5, 1.5)), route:'biyogaz', picked:null, src:'elle' });
+    entries.push({ id:uid(), date, meal:'Öğle', menu:menuToday.map(k => DISH[k][0]).join(', '), items, summary:'', source:'demo' });
+    if (back > 0) {
+      const g = {};
+      items.forEach(it => (g[it.route] ||= []).push(it));
+      const t = `16:${pad(Math.floor(rnd() * 50))}`;
+      Object.entries(g).forEach(([route, its]) => { const id = uid(); its.forEach(i => i.picked = id); pickups.push({ id, date, route, kg:r1(sum(its, i => i.kg)), created:date + 'T' + t, by:'Kağıthane Belediyesi' }); });
+    }
+  }
+  const profile = { ...DEFAULT_R, name, type, district:'Kağıthane', monthly:{ ciro:Math.round(1150000 * scale / 1000) * 1000, alim:Math.round(390000 * scale / 1000) * 1000 } };
+  if (menu === 'lokanta') {
+    profile.prices = { dana:760, tavuk:195, pirinc:78, baklagil:85, tahil:38, ekmek:40, sebze:42, sut:58 };
+    const M = [['Mercimek çorbası', 90, 120, 250], ['Kuru fasulye', 160, 55, 300], ['Pirinç pilavı', 70, 110, 200], ['Tavuk sote', 220, 60, 300],
+      ['Izgara köfte', 320, 45, 250], ['Makarna', 90, 40, 250], ['Karnıyarık', 200, 35, 300], ['Sütlaç', 100, 35, 180], ['Mevsim salata', 80, 50, 200]];
+    profile.menu = {}; M.forEach(([n, price, daily, g]) => profile.menu[norm(n)] = { name:n, price, daily, g });
+  }
+  return { profile, entries, pickups, ready: readyAt ? { date:today(), at:readyAt } : null };
+}
+const DEMO_RESTAURANTS = [
+  { u:'ornek',  seed:7,  scale:1,   menu:'lokanta',   name:'Örnek Lokanta',        type:'Restoran',          readyAt:'14:20' },
+  { u:'kampus', seed:19, scale:2.6, menu:'yemekhane', name:'Kampüs Yemekhanesi',   type:'Okul / üniversite', readyAt:'14:45' },
+  { u:'sifa',   seed:31, scale:1.7, menu:'hastane',   name:'Şifa Hastanesi Mutfağı', type:'Hastane',         readyAt:null },
+  { u:'keyif',  seed:43, scale:1.2, menu:'kebap',     name:'Keyif Kebap',          type:'Restoran',          readyAt:null }
+];
+const DEMO_V = 8;
+async function ensureDemo(district){
+  const accounts = DEMO_RESTAURANTS.map(d => ({ u:d.u, role:'restoran', data:genDemo(d) }));
+  accounts.push({ u:'kagithane', role:'belediye', data:{ profile:{ ...DEFAULT_B, name:'Kağıthane Belediyesi' } } });
+  await api('/api/demo', { method:'POST', body:{ v: DEMO_V + ':' + today(), accounts, district: district || '' } });
+}
+async function demoLogin(kind){
+  authBusy = true; authErr = ''; render();
+  try {
+    await ensureDemo();
+    const u = kind === 'belediye' ? 'kagithane' : 'ornek';
+    const r = await api('/api/auth', { method:'POST', body:{ action:'login', role:kind === 'belediye' ? 'belediye' : 'restoran', username:u, password:'bereket' } });
+    await startSession(r, true);
+    toast(`Örnek hesap: ${u} · şifre: bereket`);
+  } catch (e) { authBusy = false; authErr = AUTH_ERR[e.code] || 'Örnek hesap açılamadı. Tekrar deneyin.'; render(); }
+}
+
+/* =========================================================
+   RESTORAN: Pano
+   ========================================================= */
+function vEmpty(){
+  return `<h2 class="hero">Atığı fotoğrafla, israfı kaynağında azalt.</h2>
+  <p class="hero-sub">Bereket atığınızı fotoğraftan tanır, hayvansal mı bitkisel mi olduğunu, karbonunu ve maliyetini hesaplar; kalanı her gün belediye toplar.</p>
+  <ol class="steps">
+    <li><div><h3>Atığın fotoğrafını çek</h3><p class="muted small">Servis sonrası atık kovası ya da dönen tepsi yeterli.</p></div></li>
+    <li><div><h3>Üretim önerisini al</h3><p class="muted small">Birkaç gün sonra hangi yemeği kaç porsiyon az yapacağınızı görürsünüz.</p></div></li>
+    <li><div><h3>Günlük toplamaya teslim et</h3><p class="muted small">Belediye ekibi her gün uğrar, atık doğru akışa gider.</p></div></li>
+  </ol>
+  <div class="stack" style="margin-top:26px">
+    <button class="btn block" data-nav="kaydet">İlk atığı kaydet</button>
+    <button class="btn ghost block" data-action="demo">Örnek verilerle dene</button>
+  </div>`;
+}
+function vPano(){
+  if (!S.entries.length) return feedPanel() + vEmpty();
+  const F = factorsOf(S.profile), end = today(), start = addDays(end, -(range - 1));
+  const all = allRows(), rows = between(all, start, end), prev = between(all, addDays(start, -range), addDays(start, -1));
+  const kg = sum(rows, r => r.kg), prevKg = sum(prev, r => r.kg);
+  const tl = sum(rows, r => tlOf(r, F)), co = sum(rows, r => co2Of(r, F));
+  let change = '';
+  if (prevKg > 0) {
+    const pct = Math.round((kg - prevKg) / prevKg * 100);
+    change = pct <= 0 ? `<span class="chip good">Önceki döneme göre %${Math.abs(pct)} daha az</span>` : `<span class="chip bad">Önceki döneme göre %${pct} daha fazla</span>`;
+  }
+  const byMain = {};
+  rows.forEach(r => { byMain[r.main] ||= { kg:0, tl:0 }; byMain[r.main].kg += r.kg; byMain[r.main].tl += tlOf(r, F); });
+  const mains = Object.entries(byMain).sort((a, b) => b[1].tl - a[1].tl);
+  const maxTl = mains[0]?.[1].tl || 1;
+  const byDish = {};
+  rows.filter(r => r.type === 'fazla' || r.type === 'tabak').forEach(r => {
+    const k = r.name.trim() || MAINS[r.main].name;
+    byDish[k] ||= { kg:0, tl:0, days:{} };
+    byDish[k].kg += r.kg; byDish[k].tl += tlOf(r, F);
+    const d = dow(r.date); byDish[k].days[d] = (byDish[k].days[d] || 0) + r.kg;
+  });
+  const dishes = Object.entries(byDish).sort((a, b) => b[1].tl - a[1].tl).slice(0, 5);
+  const split = originSplit(rows, F);
+  return `${feedPanel()}
+  <div class="seg" role="group" aria-label="Zaman aralığı" style="margin:22px 0 20px">
+    <button data-range="7" aria-pressed="${range === 7}">Son 7 gün</button>
+    <button data-range="30" aria-pressed="${range === 30}">Son 30 gün</button>
+  </div>
+  <h2 class="hero num">Son ${range} günde ${fmt(kg)} kg yemek israf oldu.</h2>
+  <p class="hero-sub">Mali kaybı yaklaşık <strong>${fmtTL(tl)}</strong>, karbon ayak izi <strong>${fmt(co, 0)} kg CO₂e</strong>.</p>
+  <div class="row" style="margin-top:12px">${change}</div>
+
+  ${moneyPanel()}
+  ${menuPanel()}
+
+  <section class="section panel">
+    <div class="section-head"><h2>Hayvansal mı, bitkisel mi?</h2></div>
+    ${split.html}
+  </section>
+
+  <section class="section panel">
+    <div class="section-head"><h2>Günlük atık</h2><span class="small muted">kg</span></div>
+    ${dailyChart(start, end, rows, 'type', TYPE_COLOR, ['hazirlik','bozuk','tabak','fazla'], TYPES)}
+    ${legend(TYPES, TYPE_COLOR)}
+  </section>
+
+  <section class="section panel">
+    <div class="section-head"><h2>Ana bileşene göre kayıp</h2><span class="small muted">₺</span></div>
+    ${mains.map(([m, v]) => `<div class="hbar"><span>${esc(MAINS[m].name)}</span><div class="track"><div class="fill" style="width:${(v.tl / maxTl * 100).toFixed(1)}%; background:${ORIGIN_COLOR[MAINS[m].origin]}"></div></div><span class="num small">${fmtTL(v.tl)}</span></div>`).join('')}
+  </section>
+
+  <section class="section panel">
+    <div class="section-head"><h2>En pahalıya mal olanlar</h2></div>
+    <ul class="list">${dishes.map(([n, d]) => {
+      const peak = Object.entries(d.days).sort((a, b) => b[1] - a[1])[0];
+      return `<li><div><strong>${esc(n)}</strong><div class="small muted">${fmt(d.kg)} kg · en çok ${DAYS[peak[0]]}</div></div><span class="num">${fmtTL(d.tl)}</span></li>`;
+    }).join('') || '<li class="muted">Önlenebilir atık kaydı yok.</li>'}</ul>
+    ${dishes.length ? `<button class="btn ghost block small" data-nav="tahmin" style="margin-top:10px">Üretim önerilerini gör</button>` : ''}
+  </section>`;
+}
+
+/* ---------- Mali tablo: israfın kâr-zarara etkisi ---------- */
+function window30(){
+  const F = factorsOf(S.profile), end = today(), start = addDays(end, -29);
+  const rows = between(allRows(), start, end);
+  const dates = [...new Set(rows.map(r => r.date))].sort();
+  if (!dates.length) return null;
+  const span = Math.min(30, Math.round((parseDay(end) - parseDay(dates[0])) / 864e5) + 1);
+  const k = 30 / span, kg = sum(rows, r => r.kg);
+  return { rows, F, span, k, openDays:dates.length,
+    tl: sum(rows, r => tlOf(r, F)) * k, tlAvoid: sum(rows.filter(r => r.type !== 'hazirlik'), r => tlOf(r, F)) * k,
+    weighed: kg ? sum(rows.filter(r => r.src !== 'foto'), r => r.kg) / kg : 1 };
+}
+const pct = (a, b) => b ? '%' + fmt(a / b * 100, 1) : '—';
+function moneyPanel(){
+  const M = S.profile.monthly || {}, W = window30();
+  const ownPrices = Object.values(factorsOf(S.profile)).filter(f => f.own).length, nMain = Object.keys(MAINS).length;
+  const quality = W ? `Son ${W.span} günün verisi${W.span < 30 ? ' (30 güne ölçeklendi)' : ''} · ağırlıkların ${P_(W.weighed * 100)} elle/tartılarak girildi · ${ownPrices}/${nMain} alış fiyatı sizin.` : '';
+  const form = `<form id="moneyForm" class="fields" style="margin-top:12px">
+      <label class="f">Aylık ciro (₺)<input type="number" inputmode="decimal" name="ciro" min="0" step="1000" value="${M.ciro || ''}" placeholder="örn. 1.150.000"></label>
+      <label class="f">Aylık gıda alımı (₺)<input type="number" inputmode="decimal" name="alim" min="0" step="1000" value="${M.alim || ''}" placeholder="örn. 380.000"></label>
+      <button class="btn small wide" type="submit">Hesapla</button>
+    </form>`;
+  if (!(M.ciro > 0 && M.alim > 0) || !W) return `<section class="section panel">
+    <div class="section-head"><h2>İsraf kârınızdan ne götürüyor?</h2></div>
+    <p class="small muted">Aylık ciro ve gıda alım tutarınızı girin; israfın gıda maliyet oranınıza ve net kârınıza etkisini hesaplayalım. Bu bilgiler yalnızca sizde kalır, belediyeyle paylaşılmaz.</p>
+    ${form}</section>`;
+  const fco = M.alim / M.ciro, half = W.tlAvoid / 2, fcoNew = (M.alim - half) / M.ciro;
+  return `<section class="section panel">
+    <div class="section-head"><h2>İsraf kârınızdan ne götürüyor?</h2><span class="small muted">aylık</span></div>
+    <div class="fin">
+      <p class="big num">Aldığınız gıdanın ${P_(W.tl / M.alim * 100, 1)} çöpe gidiyor: ayda yaklaşık ${fmtTL(W.tl)}.</p>
+      <div class="line"><span>Gıda maliyet oranı</span><b>%${fmt(fco * 100, 1)}</b></div>
+      <div class="line"><span>İsrafın ciroya oranı</span><b>${pct(W.tl, M.ciro)}</b></div>
+      <div class="line"><span>Önlenebilir israf (aylık)</span><b>${fmtTL(W.tlAvoid)}</b></div>
+      <div class="line"><span>Önlenebilir israf yarıya inerse gıda maliyet oranı</span><b>%${fmt(fco * 100, 1)} → %${fmt(fcoNew * 100, 1)}</b></div>
+      <div class="line"><span>… ve yıllık net kâra katkısı</span><b style="color:var(--green)">+${fmtTL(half * 12)}</b></div>
+    </div>
+    <p class="note">${quality} Hesap yalnızca ana bileşenin hammadde maliyetini içerir; yağ, sos, enerji ve işçilik dahil değildir, gerçek kayıp bundan yüksektir.</p>
+    <details style="margin-top:6px"><summary class="link small">Ciro ve alım tutarını güncelle</summary>${form}</details>
+  </section>`;
+}
+/* ---------- Menü kârlılığı: israf porsiyon kârından ne kadar götürüyor ---------- */
+function menuAnalysis(){
+  const P = S.profile, F = factorsOf(P), W = window30(), M = P.monthly || {};
+  const items = Object.values(P.menu || {}).filter(m => m.price > 0 && m.daily > 0);
+  if (!items.length || !W) return { list:[] };
+  const fco = M.ciro > 0 && M.alim > 0 ? M.alim / M.ciro : null;
+  const list = items.map(m => {
+    const main = mainByName(m.name), f = F[main] || F.diger, rw = rawFactor({ name:m.name, main });
+    const portion = (Number(m.g) > 0 ? m.g : P.portionKg * 1000) / 1000;
+    const waste = W.rows.filter(r => r.type !== 'hazirlik' && norm(r.name) === norm(m.name));
+    const kgDay = sum(waste, r => r.kg) / W.openDays, pDay = kgDay / portion;
+    const ratio = pDay / (m.daily + pDay);
+    const unit = fco ? m.price * fco : portion * rw * f.tl;          // porsiyon maliyeti
+    return { name:m.name, main, price:m.price, daily:m.daily, kgDay, pDay, ratio, unit, monthTl:pDay * unit * 26 };
+  }).sort((a, b) => b.monthTl - a.monthTl);
+  return { list, fco };
+}
+function menuPanel(){
+  const { list:L, fco } = menuAnalysis();
+  if (!L.length) return `<section class="section panel">
+    <div class="section-head"><h2>Menü: hangi yemek ne kadar israf ediliyor?</h2></div>
+    <p class="small muted">Yemeklerinizin satış fiyatını ve günlük satış adedini girin; her yemeğin üretiminin yüzde kaçının çöpe gittiğini ve bunun aylık maliyetini gösterelim.</p>
+    <button class="btn ghost small block" data-action="profile" style="margin-top:12px">Menü bilgilerini gir</button></section>`;
+  const max = Math.max(...L.map(x => x.monthTl), 1), total = sum(L, x => x.monthTl);
+  return `<section class="section panel">
+    <div class="section-head"><h2>Menü: hangi yemek ne kadar israf ediliyor?</h2></div>
+    <p class="small" style="margin-bottom:6px">Menüdeki yemeklerin israfı ayda yaklaşık <strong>${fmtTL(total)}</strong> tutuyor.</p>
+    ${L.map(x => { const o = MAINS[x.main].origin, bad = x.ratio >= 0.05; return `<div class="menurow">
+      <div class="row" style="justify-content:space-between"><span><strong>${esc(x.name)}</strong> <span class="chip ${o}">${ORIGIN[o]}</span></span><span class="small ${bad ? 'err' : 'muted'}" style="white-space:nowrap">üretimin ${P_(x.ratio * 100, 1)} çöpe</span></div>
+      <div class="three">
+        <div><b class="${bad ? 'neg' : ''}">${fmt(x.pDay, 1)}</b>porsiyon/gün atılıyor</div>
+        <div><b>${fmtTL(x.unit)}</b>porsiyon maliyeti</div>
+        <div><b class="${bad ? 'neg' : ''}">${fmtTL(x.monthTl)}</b>aylık kayıp</div>
+      </div>
+      <div class="bar"><i style="width:${(x.monthTl / max * 100).toFixed(1)}%; background:${bad ? 'var(--tomato)' : 'var(--wheat)'}"></i></div>
+      ${bad ? `<p class="small muted">Günde ${fmt(x.daily, 0)} porsiyon satılıyor, ${fmt(x.pDay, 0)} porsiyon atılıyor. Üretimi ${Math.max(1, Math.round(x.pDay))} porsiyon azaltmayı ya da porsiyonu küçültmeyi deneyin.</p>` : ''}
+    </div>`; }).join('')}
+    <p class="note">${fco ? `Porsiyon maliyeti = satış fiyatı × gıda maliyet oranınız (%${fmt(fco * 100, 1)}).` : 'Porsiyon maliyeti yalnızca ana bileşenle hesaplandı; ciro ve alım tutarını girerseniz porsiyonun tamamı hesaba katılır.'} Atılan porsiyon = son 30 günde bu yemekten atılan günlük ortalama kg ÷ porsiyon ağırlığı.</p>
+  </section>`;
+}
+
+/* =========================================================
+   RESTORAN: Kaydet (görsel tanıma)
+   ========================================================= */
+function opts(map, sel){ return Object.entries(map).map(([k, v]) => `<option value="${k}" ${k === sel ? 'selected' : ''}>${esc(typeof v === 'string' ? v : v.name)}</option>`).join(''); }
+function metaLine(it){
+  const F = factorsOf(S.profile), o = originOf(it);
+  const s = it.src === 'foto' ? '<span class="chip src-foto">Fotoğraf tahmini · tartıp düzeltin</span>' : '<span class="chip src-elle">Elle girildi</span>';
+  return `<span class="chip ${o}">${ORIGIN[o]}</span><span class="chip num">${fmtTL(tlOf(it, F))} kayıp</span>${s}${it.conf != null && it.conf < 0.5 ? '<span class="chip bad">Düşük güven, kontrol edin</span>' : ''}`;
+}
+function itemRow(it, i){
+  return `<div class="irow" data-i="${i}">
+    <input class="in" data-f="name" value="${esc(it.name)}" placeholder="Yemek adı (örn. Pilav)" aria-label="Yemek adı">
+    <select data-f="main" aria-label="Ana bileşen">${opts(MAINS, it.main)}</select>
+    <select data-f="type" aria-label="Atık türü">${opts(TYPES, it.type)}</select>
+    <label class="kg"><input type="number" inputmode="decimal" min="0" step="0.1" data-f="kg" value="${it.kg}" aria-label="Ağırlık"><span>kg</span></label>
+    <select data-f="route" aria-label="Yönlendirme">${opts(ROUTES, it.route)}</select>
+    <div class="meta" data-meta>${metaLine(it)}</div>
+    <button type="button" class="icon del" data-action="del-item" data-i="${i}" aria-label="Satırı sil">×</button>
+  </div>`;
+}
+let QUICK = [], qCat = 'sik', qSearch = '';
+function quickList(){
+  const all = Object.values(DISH);
+  if (qSearch) QUICK = all.filter(([n]) => norm(n).includes(norm(qSearch)));
+  else if (qCat === 'sik') {
+    const freq = {};
+    S.entries.forEach(e => e.items.forEach(i => { if (i.name) { const k = i.name + '\u0001' + i.main; freq[k] = (freq[k] || 0) + 1; } }));
+    const mine = Object.entries(freq).sort((a, b) => b[1] - a[1]).map(([k]) => k.split('\u0001'));
+    const seen = new Set(); QUICK = [];
+    [...mine, ...all].forEach(([n, m]) => { if (!seen.has(norm(n)) && QUICK.length < 12) { seen.add(norm(n)); QUICK.push([n, m]); } });
+  } else QUICK = all.filter(d => d[2] === qCat);
+  return QUICK;
+}
+const qgridHTML = () => { const q = quickList(); return q.length ? q.map(([n, m], i) => `<button data-action="quick" data-q="${i}"><i class="dot" style="background:${ORIGIN_COLOR[MAINS[m].origin]}"></i>${esc(n)}</button>`).join('') : `<p class="small muted">Bulunamadı. <button class="link" data-action="add-named">“${esc(qSearch)}” olarak ekle</button></p>`; };
+function calcCard(){
+  const F = factorsOf(S.profile), its = draft.items.map(i => ({ ...i, kg:Number(i.kg) || 0 }));
+  const kg = sum(its, i => i.kg), co = sum(its, i => co2Of(i, F)), tl = sum(its, i => tlOf(i, F));
+  const hk = sum(its.filter(i => originOf(i) === 'h'), i => i.kg), hc = sum(its.filter(i => originOf(i) === 'h'), i => co2Of(i, F));
+  return `<div class="three">
+      <div><b class="num">${fmt(kg)} kg</b><span>atık</span></div>
+      <div><b class="num">${fmt(co, co < 10 ? 1 : 0)}</b><span>kg CO₂e karbon</span></div>
+      <div><b class="num">${fmtTL(tl)}</b><span>maliyet kaybı</span></div>
+    </div>
+    <p class="og">${kg ? `Hayvansal ${fmt(hk)} kg (karbonun ${P_(co ? hc / co * 100 : 0)}) · Bitkisel ${fmt(kg - hk)} kg` : 'Yemek ekledikçe hesaplanır.'}</p>
+    ${kg ? `<p class="og">Ağırlık: ${fmt(sum(its.filter(i => i.src !== 'foto'), i => i.kg))} kg elle/tartılarak · ${fmt(sum(its.filter(i => i.src === 'foto'), i => i.kg))} kg fotoğraf tahmini</p>` : ''}`;
+}
+function totalsLine(){
+  const F = factorsOf(S.profile), its = draft.items.map(i => ({ ...i, kg:Number(i.kg) || 0 }));
+  return `Toplam ${fmt(sum(its, i => i.kg))} kg · ${fmt(sum(its, i => co2Of(i, F)), 0)} kg CO₂e · ${fmtTL(sum(its, i => tlOf(i, F)))}`;
+}
+function aiStatusLine(){
+  if (aiBlocked) return 'Yapay zekâ şu an kullanılamıyor (sunucuda API anahtarı ayarlı değil). Elle ekleyebilirsiniz.';
+  if (!aiReady) return 'Yapay zekâ hazırlanıyor…';
+  if (!imagesOK) return 'Bu görünümde fotoğraf analizi açık değil. Elle ekleyebilirsiniz.';
+  return '';
+}
+function vResult(){
+  const R = draft.result, F = factorsOf(S.profile);
+  return `<span class="chip good">✓ Kaydedildi · ${DAYS[dow(R.date)]}, ${dm(R.date)} ${esc(R.meal)}</span>
+  <h2 class="hero num" style="margin-top:12px">Bu atığın maliyeti ${fmtTL(R.tl)}, karbon ayak izi ${fmt(R.co, R.co < 10 ? 1 : 0)} kg CO₂e.</h2>
+  <p class="hero-sub">${fmt(R.kg)} kg atık; ${R.hk ? `${fmt(R.hk)} kg'ı hayvansal kaynaklı ve karbonun ${P_(R.co ? R.hc / R.co * 100 : 0, 0, 'ni')} oluşturuyor.` : 'tamamı bitkisel kaynaklı.'}</p>
+  <section class="section panel">
+    <div class="section-head"><h2>Kalem kalem hesap</h2></div>
+    <ul class="list">${R.items.map(i => { const o = originOf(i); return `<li><div style="min-width:0"><strong>${esc(i.name || MAINS[i.main].name)}</strong> <span class="chip ${o}">${ORIGIN[o]}</span>
+      <div class="small muted num" style="margin-top:4px">${fmt(i.kg)} kg · ${TYPES[i.type]}</div>
+      <div class="small" style="margin-top:2px">→ ${ROUTES[i.route].name}</div></div><span class="num">${fmtTL(tlOf(i, F))}</span></li>`; }).join('')}</ul>
+  </section>
+  <div class="stack section">
+    <button class="btn block" data-nav="toplama">Taşıma sistemine geç</button>
+    <button class="btn ghost block" data-action="new-entry">Yeni yemek ekle</button>
+  </div>`;
+}
+const CONTAINERS = { otomatik:'Otomatik algıla', kova:'120 L çöp kovası', kova40:'40 L atık kovası', gn:'GN 1/1 küvet (60×40)', tencere:'Büyük tencere', tepsi:'Tabldot tepsi', tabak:'Servis tabağı' };
+function photoHero(){
+  const d = draft, can = aiReady && imagesOK && !aiBlocked, n = d.photos.length;
+  if (busy) return `<div class="photo-hero scan"><div class="nazar-big"><svg width="100" height="100" viewBox="0 0 40 40" aria-hidden="true"><circle class="r1" cx="20" cy="20" r="19" style="fill:#1F4FB8"/><circle class="r2" cx="20" cy="20" r="13" style="fill:#fff"/><circle class="r3" cx="20" cy="20" r="8.5" style="fill:#8EC5F0"/><circle cx="20" cy="20" r="4" style="fill:#14213D"/></svg></div>
+    <h2>${n > 1 ? n + ' fotoğraf' : 'Fotoğraf'} inceleniyor</h2>
+    <p class="muted small">1. Yemekler tanınıyor · 2. Ağırlık tahmin ediliyor · 3. Karbon ve maliyet hesaplanıyor. 10–40 saniye sürebilir.</p>
+    <button class="btn ghost small" data-action="stop">Analizi durdur</button></div>`;
+  const pin = (cap, label, ic) => `<label class="btn ${cap ? '' : 'ghost'} pbtn ${can ? '' : 'disabled'}">${ic}${label}<input type="file" accept="image/*" ${cap ? 'capture="environment"' : 'multiple'} data-photo ${can ? '' : 'disabled'} aria-label="${label}"></label>`;
+  return `<div class="photo-hero">
+    <div><h2>Fotoğrafla ölç</h2><p class="small muted" style="margin-top:4px">Atığın fotoğrafını çekin; yapay zekâ yemekleri ve ağırlığı tanısın, karbon ayak izi ve mali kayıp hesaplansın.</p></div>
+    ${n ? `<div class="thumbs">${d.photos.map((p, i) => `<div class="thumb"><img src="${p.url}" alt="Atık fotoğrafı ${i + 1}"><button data-action="del-photo" data-i="${i}" aria-label="Fotoğrafı kaldır">×</button></div>`).join('')}
+      ${n < imgMax && can ? `<label class="thumb add" aria-label="Fotoğraf ekle">+<input type="file" accept="image/*" multiple data-photo></label>` : ''}</div>` :
+      `<div class="pbtns">${pin(true, 'Fotoğraf çek', icon('kaydet', 20))}${pin(false, 'Galeriden yükle', '')}</div>`}
+    ${!can ? `<p class="chip bad" style="justify-self:start">${esc(aiStatusLine())}</p>` : ''}
+    ${n ? `<div class="fields">
+        <label class="f">Kap / ölçek<select data-d="container">${opts(CONTAINERS, d.container)}</select></label>
+        <label class="f">Günün menüsü<input type="text" data-d="menu" value="${esc(d.menu)}" placeholder="İsteğe bağlı"></label>
+      </div>
+      <button class="btn block" data-action="analyze" ${can ? '' : 'disabled'}>${n > 1 ? n + ' fotoğrafı' : 'Fotoğrafı'} analiz et</button>` :
+      `<div class="hint"><span>💡</span><span><b>Daha isabetli sonuç için:</b> atığı yukarıdan, kabın tamamı görünecek şekilde ve iyi ışıkta çekin. Aynı atığın farklı açılarından ${imgMax} fotoğrafa kadar ekleyebilirsiniz.</span></div>`}
+  </div>`;
+}
+function analysisCard(){
+  const A = draft.analysis; if (!A) return '';
+  const F = factorsOf(S.profile), its = A.items, kg = sum(its, i => i.kg), co = sum(its, i => co2Of(i, F)), tl = sum(its, i => tlOf(i, F));
+  const og = { h:0, b:0, k:0 }; its.forEach(i => og[originOf(i)] += co2Of(i, F));
+  return `<section class="section analysis">
+    <div class="head">${A.thumb ? `<img src="${A.thumb}" alt="">` : '<span></span>'}
+      <div><h3>Fotoğraf analizi</h3><p>${its.length} yemek tanındı · ${fmt(kg)} kg tahmini atık</p></div></div>
+    <div class="body">
+      <div class="bigtri" style="margin-top:14px">
+        <div><b class="num">${fmt(co, co < 10 ? 1 : 0)} kg</b><span>CO₂e karbon ayak izi</span></div>
+        <div><b class="num">${fmtTL(tl)}</b><span>olası mali kayıp</span></div>
+        <div><b class="num">${fmt(kg / S.profile.portionKg, 0)}</b><span>porsiyon karşılığı</span></div>
+      </div>
+      <div class="oc">${['h','b','k'].filter(o => og[o] > 0).map(o => `<div class="pbar" style="border:0; padding:4px 0">
+        <div class="top"><span>${ORIGIN[o]}</span><span class="num">${fmt(og[o], 1)} kg CO₂e · %${co ? Math.round(og[o] / co * 100) : 0}</span></div>
+        <div class="track"><i style="width:${co ? og[o] / co * 100 : 0}%; background:${ORIGIN_COLOR[o]}"></i></div></div>`).join('')}</div>
+      ${A.summary ? `<div class="ai-note small" style="margin-top:14px"><strong>Ne görüldü:</strong> ${esc(A.summary)}${A.tip ? `<br><strong>Öneri:</strong> ${esc(A.tip)}` : ''}</div>` : ''}
+      <div>${its.map(i => { const o = originOf(i), c = i.conf ?? 0.6; return `<div class="arow">
+        <span class="nm">${esc(i.name || MAINS[i.main].name)} <span class="chip ${o}">${ORIGIN[o]}</span></span><span class="num" style="font-weight:700">${fmtTL(tlOf(i, F))}</span>
+        <span class="sub"><span><b>${fmt(i.kg)} kg</b></span><span>${esc(MAINS[i.main].name)}</span><span>${TYPES[i.type]}</span><span>güven %${Math.round(c * 100)}</span></span>
+        <span class="conf"><i style="width:${Math.round(c * 100)}%; background:${c < 0.5 ? 'var(--tomato)' : c < 0.75 ? 'var(--wheat)' : 'var(--green)'}"></i></span>
+      </div>`; }).join('')}</div>
+      <p class="small muted" style="margin-top:10px">Ağırlık fotoğraftan tahmin edilir. Karbon, uluslararası sabit katsayılarla; maliyet, Profil'deki alış fiyatlarınızla hesaplanır. Tartarak ağırlığı düzeltebilirsiniz. Aşağıdan düzeltip kaydedin.</p>
+    </div>
+  </section>`;
+}
+function vKaydet(){
+  if (draft.result) return vResult();
+  const d = draft;
+  const recent = [...S.entries].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5);
+  const F = factorsOf(S.profile);
+  return `<div class="fields" style="margin-bottom:16px">
+    <label class="f">Tarih<input type="date" data-d="date" value="${d.date}" max="${today()}"></label>
+    <label class="f">Öğün<select data-d="meal">${['Kahvaltı','Öğle','Akşam','Gün sonu'].map(m => `<option ${m === d.meal ? 'selected' : ''}>${m}</option>`).join('')}</select></label>
+  </div>
+  ${photoHero()}
+  ${d.error ? `<p class="chip bad" style="margin-top:12px" role="alert">${esc(d.error)}</p>` : ''}
+  ${analysisCard()}
+
+  ${d.items.length ? `<section class="section">
+    <div class="calc" id="calc">${calcCard()}</div>
+  </section>
+  <section class="section panel">
+    <div class="section-head"><h2>${d.analysis ? 'Tanınan yemekleri kontrol et' : 'Eklenen yemekler'}</h2><span class="small muted">${d.items.length} kalem</span></div>
+    <div id="items">${d.items.map(itemRow).join('')}</div>
+    <p class="small muted" style="margin-top:8px">Ana bileşen, kökeni ve karbonu belirler. Taşıma akışı otomatik seçilir.</p>
+    <div class="fields" style="margin-top:14px">
+      <button class="btn ghost" data-action="discard">Temizle</button>
+      <button class="btn" data-action="save-entry">Kaydet ve hesapla</button>
+    </div>
+  </section>` : ''}
+
+  <details class="section panel" ${d.items.length && !d.analysis ? 'open' : ''}>
+    <summary><h2 style="font-size:17px">Elle ekle</h2></summary>
+    <div style="margin-top:12px">
+      <input type="search" class="in qsearch" id="qsearch" value="${esc(qSearch)}" placeholder="Yemek ara (örn. pilav, köfte)" aria-label="Yemek ara">
+      <div class="qcats" role="group" aria-label="Yemek grubu">${[['sik','Sık kullanılan'], ...Object.entries(DCAT)].map(([k, v]) => `<button data-qcat="${k}" aria-pressed="${!qSearch && qCat === k}">${v}</button>`).join('')}</div>
+      <div class="qgrid" id="qgrid">${qgridHTML()}</div>
+      <p class="small muted" style="margin-top:8px">${Object.keys(DISH).length} yemek · <button class="link" data-action="add-item">Boş satır ekle</button></p>
+    </div>
+  </details>
+
+  ${recent.length ? `<section class="section">
+    <div class="section-head"><h2>Son kayıtlar</h2></div>
+    <div class="panel" style="padding:4px 18px"><ul class="list">${recent.map(e => `<li>
+      <div style="min-width:0"><strong>${DAYS[dow(e.date)]}, ${dm(e.date)} · ${esc(e.meal)}${e.source === 'ai' ? ' · 📷' : ''}</strong>
+      <div class="small muted num">${fmt(sum(e.items, i => i.kg))} kg · ${fmt(sum(e.items, i => co2Of(i, F)), 0)} kg CO₂e · ${fmtTL(sum(e.items, i => tlOf(i, F)))}</div></div>
+      <button class="icon" data-action="del-entry" data-id="${e.id}" aria-label="Kaydı sil">×</button>
+    </li>`).join('')}</ul></div>
+  </section>` : ''}`;
+}
+
+const ERR = {
+  rate_limited:'Çok sık istek gönderildi. Biraz bekleyip tekrar deneyin.',
+  image_rejected:'Bu fotoğraf okunamadı. 20 MB altında bir JPEG veya PNG seçin.',
+  refused:'Fotoğraf analiz edilemedi. Başka bir fotoğraf deneyin ya da elle girin.',
+  invalid_json:'Analiz sonucu okunamadı. Tekrar deneyin.',
+  empty_completion:'Analiz sonuç vermedi. Daha net bir fotoğraf deneyin.',
+  session_expired:'Oturumunuz sona erdi. Yeniden giriş yapıp tekrar deneyin.',
+  prompt_too_large:'İstek çok büyük. Menü alanını kısaltın.'
+};
+const PERMANENT = ['not_granted','sampling_disabled','not_declared','capability_disabled','capability_removed','images_unavailable'];
+
+/* Fotoğrafı küçült: uzun kenar ≤ 1600 px, JPEG. Telefon fotoğrafları (HEIC dahil, tarayıcı açabiliyorsa) böylece sınırın altına iner. */
+async function shrink(file){
+  try {
+    const bmp = await createImageBitmap(file);
+    const k = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
+    const c = document.createElement('canvas'); c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k);
+    c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height); bmp.close?.();
+    const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', 0.85));
+    return blob || file;
+  } catch (e) { return file; }
+}
+async function addPhotos(files){
+  const list = [...files].filter(f => f && (f.type || '').startsWith('image/')).slice(0, imgMax - draft.photos.length);
+  if (!list.length) { toast('Lütfen bir fotoğraf seçin'); return; }
+  for (const f of list) { const blob = await shrink(f); draft.photos.push({ blob, url:URL.createObjectURL(blob) }); }
+  draft.error = ''; draft.analysis = null; render();
+}
+async function analyze(){
+  if (!sampleFn || !draft.photos.length) return;
+  busy = new AbortController(); draft.error = ''; render(); scrollTop();
+  const n = draft.photos.length;
+  const prompt = `Bir toplu yemek işletmesinin (${S.profile.type}) gıda atığını gösteren ${n > 1 ? n + ' fotoğraf (aynı atığın farklı açıları; kalemleri iki kez sayma)' : '1 fotoğraf'} inceliyorsun.
+Öğün: ${draft.meal}. Günün menüsü: ${draft.menu || 'belirtilmedi'}. Kap / ölçek: ${draft.container === 'otomatik' ? 'fotoğraftan sen belirle' : CONTAINERS[draft.container]}.
+
+Görevin: Atığı yemek yemek kalemlere ayır. Her kalem için yemeği tanı, ağırlıkça baskın ana bileşenini seç ve yaklaşık ağırlığı kilogram olarak tahmin et. Ölçek için kabın boyutunu ve doluluk oranını kullan (120 L kova dolu ≈ 50-60 kg yemek atığı, GN 1/1 küvet 65 mm dolu ≈ 6-8 kg, tabldot tepsi artığı ≈ 0,1-0,4 kg, servis tabağı ≈ 0,1-0,3 kg). Menüdeki yemek adlarını tercih et.
+
+Her kalem için:
+- name: kısa Türkçe yemek adı
+- main: şunlardan biri: dana (dana eti, köfte, kıyma, döner), kuzu (kuzu, adana, tandır), tavuk, balik, peynir, sut (süt, yoğurt, ayran, cacık, sütlü tatlı), yumurta, pirinc (pilav), tahil (makarna, bulgur, mantı, erişte), ekmek (ekmek, pide, lahmacun, börek, simit), patates, baklagil (mercimek, fasulye, nohut), sebze (sebze yemeği, salata, kabuk), meyve, tatli (şerbetli tatlı, baklava, revani), diger (ayırt edilemeyen karışık atık)
+- type: fazla (hiç servis edilmemiş üretim fazlası, temiz kapta) | tabak (tabaktan dönen artık) | hazirlik (kabuk, sap, çekirdek) | bozuk (bozulmuş, küflü, SKT geçmiş)
+- kg: sayı, 0.1 hassasiyetle
+- confidence: 0 ile 1 arası, tanıma ve ağırlık tahmininin güvenilirliği
+
+Ayrıca:
+- summary: ne gördüğünü, kabı ve ağırlık varsayımını anlatan 1-2 kısa Türkçe cümle
+- tip: bu atığı azaltmak için tek, somut Türkçe öneri (hayvansal ürün israfı varsa ona odaklan)
+
+Fotoğrafta gıda atığı yoksa items boş dizi olsun ve summary bunu söylesin.
+Yalnızca şu biçimde JSON ver:
+{"items":[{"name":"Tavuk sote","main":"tavuk","type":"tabak","kg":1.8,"confidence":0.7}],"summary":"...","tip":"..."}`;
+  try {
+    const res = await sampleFn.json(prompt, { images:draft.photos.map(p => p.blob), signal:busy.signal });
+    const items = (Array.isArray(res?.items) ? res.items : []).map(x => {
+      const raw = String(x?.main || '');
+      const main = MAINS[raw] ? raw : (LEGACY[raw] || mainByName(x?.name || '') || 'diger');
+      const type = TYPES[x?.type] ? x.type : 'tabak';
+      const kg = Math.max(0, r1(Number(x?.kg) || 0));
+      const conf = Math.min(1, Math.max(0, Number(x?.confidence)));
+      return { name:String(x?.name || '').slice(0, 60), main, type, kg, route:defaultRoute(main, type), conf: isFinite(conf) ? conf : null, src:'foto' };
+    }).filter(x => x.kg > 0);
+    if (!items.length) { draft.error = String(res?.summary || 'Fotoğrafta gıda atığı bulunamadı.').slice(0, 200) + ' Başka bir fotoğraf deneyin ya da elle ekleyin.'; return; }
+    draft.analysis = { items:items.map(i => ({ ...i })), summary:String(res?.summary || '').slice(0, 400), tip:String(res?.tip || '').slice(0, 300), thumb:draft.photos[0].url };
+    draft.items = [...draft.items.filter(i => !i.fromPhoto), ...items.map(i => ({ ...i, fromPhoto:true }))];
+    draft.summary = draft.analysis.summary; draft.tip = draft.analysis.tip; draft.source = 'ai';
+  } catch (e) {
+    if (e?.code === 'cancelled') {}
+    else if (PERMANENT.includes(e?.code)) { aiBlocked = true; draft.error = e?.code === 'not_granted' ? 'Yapay zekâya erişim izni verilmedi. Sayfayı yenileyip izin verebilir ya da elle ekleyebilirsiniz.' : 'Fotoğraf analizi bu görünümde kullanılamıyor. Elle ekleyebilirsiniz.'; }
+    else draft.error = ERR[e?.code] || 'Bağlantı kesildi. Tekrar deneyin.';
+  } finally { busy = null; render(); }
+}
+
+/* =========================================================
+   RESTORAN: Tahmin
+   ========================================================= */
+function patterns(){
+  const F = factorsOf(S.profile), end = today(), start = addDays(end, -27);
+  const rows = between(allRows(), start, end);
+  const datesByDow = {};
+  S.entries.filter(e => e.date >= start && e.date <= end).forEach(e => (datesByDow[dow(e.date)] ||= new Set()).add(e.date));
+  const map = {};
+  rows.forEach(r => {
+    if (r.type !== 'fazla' && r.type !== 'tabak') return;
+    const w = dow(r.date), n = r.name.trim() || MAINS[r.main].name, k = w + '|' + norm(n);
+    map[k] ||= { w, name:n, main:r.main, fazla:0, tabak:0, fazlaTL:0, fazlaCO:0 };
+    map[k][r.type] += r.kg;
+    if (r.type === 'fazla') { map[k].fazlaTL += tlOf(r, F); map[k].fazlaCO += co2Of(r, F); }
+  });
+  const out = {};
+  Object.values(map).forEach(p => {
+    const weeks = datesByDow[p.w]?.size || 1;
+    p.fazlaAvg = p.fazla / weeks; p.tabakAvg = p.tabak / weeks; p.tlAvg = p.fazlaTL / weeks; p.coAvg = p.fazlaCO / weeks;
+    if (p.fazlaAvg >= 0.5 || p.tabakAvg >= 1) (out[p.w] ||= []).push(p);
+  });
+  Object.values(out).forEach(a => a.sort((x, y) => y.tlAvg - x.tlAvg));
+  return { byDow:out, daysCovered:new Set(rows.map(r => r.date)).size, rows };
+}
+function vTahmin(){
+  const { byDow, daysCovered } = patterns(), P = S.profile;
+  if (daysCovered < 5) {
+    return `<h2 class="hero">Tahmin için birkaç gün daha kayıt gerekiyor.</h2>
+    <p class="hero-sub">En az 5 günlük kayıt lazım. Şu an ${daysCovered} gün var.</p>
+    <div class="stack" style="margin-top:22px"><button class="btn block" data-nav="kaydet">Atık kaydet</button><button class="btn ghost block" data-action="demo">Örnek verilerle dene</button></div>`;
+  }
+  const next = []; for (let i = 1; i <= 7; i++) next.push(addDays(today(), i));
+  const all = Object.values(byDow).flat();
+  const weeklySave = sum(all, p => p.tlAvg), weeklyCO = sum(all, p => p.coAvg);
+  const dayBlocks = next.map(d => {
+    const list = byDow[dow(d)] || [];
+    if (!list.length) return '';
+    return `<div class="day"><h3>${DAYS[dow(d)]} <span class="small muted">${dm(d)}</span></h3>
+      ${list.slice(0, 4).map(p => {
+        const lines = [];
+        if (p.fazlaAvg >= 0.5) lines.push(`Üretimi yaklaşık <strong>${Math.max(1, Math.round(p.fazlaAvg / P.portionKg))} porsiyon</strong> azaltın. Ortalama ${fmt(p.fazlaAvg)} kg servis edilmeden kalıyor (${fmtTL(p.tlAvg)}).`);
+        if (p.tabakAvg >= 1) lines.push(`Tabaktan ortalama ${fmt(p.tabakAvg)} kg dönüyor; porsiyonu küçültmeyi deneyin.`);
+        const o = MAINS[p.main].origin;
+        return `<div class="sugg"><span class="bar" style="background:${ORIGIN_COLOR[o]}"></span><div><strong>${esc(p.name)}</strong> <span class="chip ${o}" style="margin-left:4px">${ORIGIN[o]}</span><p class="small" style="margin-top:4px">${lines.join(' ')}</p></div></div>`;
+      }).join('')}</div>`;
+  }).filter(Boolean);
+  const canAI = aiReady && !aiBlocked;
+  return `<h2 class="hero">Gelecek hafta ${fmtTL(weeklySave)} tasarruf edebilirsiniz.</h2>
+  <p class="hero-sub">Son 4 haftadaki ${daysCovered} günlük kayda göre. Fazla üretimi önlerseniz haftada ${fmt(weeklyCO, 0)} kg CO₂e salımı da önlenir.</p>
+  <section class="section panel">
+    <div class="section-head"><h2>Haftalık eylem planı</h2><span class="chip ${planData ? 'good' : ''}">${planData ? 'Yapay zekâ' : 'Kayıtlarınızdan'}</span></div>
+    ${planData?.ozet ? `<div class="ai-note small">${esc(planData.ozet)}</div>` : ''}
+    ${planState === 'loading' ? '<p class="muted" style="margin-bottom:10px">Yapay zekâ planı hazırlıyor…</p>' : ''}
+    ${planChart(planData ? planData.acts : rulePlan())}
+    ${planState === 'error' ? `<p class="chip bad" role="alert" style="margin-top:10px">${esc(planErr)}</p>` : ''}
+    <div class="stack" style="margin-top:14px">
+      ${planState === 'loading' ? `<button class="btn ghost block" data-action="stop-plan">Durdur</button>` :
+        `<button class="btn block" data-action="plan" ${canAI ? '' : 'disabled'}>${planData ? 'Planı yeniden oluştur' : 'Yapay zekâ ile planı oluştur'}</button>`}
+      ${planData ? `<button class="btn ghost block small" data-action="plan-reset">Kayıtlara dayalı plana dön</button>` : ''}
+      ${!canAI ? `<span class="small muted">${esc(aiStatusLine())}</span>` : ''}
+    </div>
+  </section>
+  <section class="section panel">
+    <div class="section-head"><h2>Gün gün öneriler</h2><span class="small muted">1 porsiyon = ${fmt(P.portionKg, 2)} kg</span></div>
+    ${dayBlocks.join('') || '<p class="muted">Önümüzdeki 7 gün için belirgin bir fazla üretim yok. Güzel gidiyor.</p>'}
+  </section>`;
+}
+let planData = null;
+function mainByName(n){
+  const k = norm(n);
+  const d = Object.values(DISH).find(x => norm(x[0]) === k);
+  if (d) return d[1];
+  const r = S.entries.flatMap(e => e.items).find(i => norm(i.name) === k);
+  return r?.main || 'diger';
+}
+function rulePlan(){
+  const { byDow } = patterns(), P = S.profile, F = factorsOf(P), acts = [];
+  for (let i = 1; i <= 7; i++) {
+    const d = addDays(today(), i);
+    (byDow[dow(d)] || []).forEach(p => {
+      if (p.fazlaAvg >= 0.5) acts.push({ gun:DAYS[dow(d)], yemek:p.name, main:p.main, eylem:`Üretimi ${Math.max(1, Math.round(p.fazlaAvg / P.portionKg))} porsiyon azalt`, tl:p.tlAvg, co:p.coAvg });
+      else if (p.tabakAvg >= 1) acts.push({ gun:DAYS[dow(d)], yemek:p.name, main:p.main, eylem:'Porsiyonu %20 küçült', tl:p.tabakAvg * 0.2 * rawFactor(p) * F[p.main].tl, co:p.tabakAvg * 0.2 * rawFactor(p) * F[p.main].co2 });
+    });
+  }
+  return acts.sort((a, b) => b.tl - a.tl).slice(0, 8);
+}
+function planChart(acts){
+  if (!acts.length) return '<p class="muted">Önümüzdeki hafta için eylem gerektiren bir örüntü yok.</p>';
+  const tl = sum(acts, a => a.tl), co = sum(acts, a => a.co), max = Math.max(...acts.map(a => a.tl), 1);
+  const order = [1, 2, 3, 4, 5, 6, 0], byDay = {};
+  acts.forEach(a => { const w = DAYS.indexOf(a.gun); byDay[w] = (byDay[w] || 0) + a.tl; });
+  const dmax = Math.max(1, ...Object.values(byDay));
+  const W = 340, H = 120, bw = 30, gap = (W - 7 * bw) / 6;
+  const cols = order.map((w, i) => { const v = byDay[w] || 0, bh = (H - 34) * v / dmax, x = i * (bw + gap);
+    return `<rect x="${x}" y="${H - 18 - bh}" width="${bw}" height="${Math.max(bh, v ? 2 : 0)}" rx="5" style="fill:var(--green)"><title>${DAYS[w]}: ${fmtTL(v)}</title></rect>
+      <text x="${x + bw / 2}" y="${H - 4}" text-anchor="middle" style="font-size:10px; fill:var(--muted)">${SHORT[w]}</text>
+      ${v ? `<text x="${x + bw / 2}" y="${H - 22 - bh}" text-anchor="middle" style="font-size:9px; fill:var(--ink); font-weight:600">${Math.round(v)}</text>` : ''}`; }).join('');
+  return `<div class="bigtri" style="grid-template-columns:1fr 1fr; margin-top:0">
+      <div><b class="num">${fmtTL(tl)}</b><span>haftalık tasarruf hedefi</span></div>
+      <div><b class="num">${fmt(co, 0)} kg</b><span>CO₂e önlenir</span></div>
+    </div>
+    <h3 style="margin:18px 0 6px">Eylem eylem tasarruf</h3>
+    ${acts.map(a => { const o = MAINS[a.main]?.origin || 'k'; return `<div class="pbar">
+      <div class="top"><span><strong>${esc(a.gun)}</strong> · ${esc(a.yemek)}</span><span class="num" style="font-weight:700">${fmtTL(a.tl)}</span></div>
+      <div class="track"><i style="width:${(a.tl / max * 100).toFixed(1)}%; background:${ORIGIN_COLOR[o]}"></i></div>
+      <span class="small muted">${esc(a.eylem)}</span>
+    </div>`; }).join('')}
+    <h3 style="margin:18px 0 8px">Günlere göre tasarruf</h3>
+    <svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Günlere göre tasarruf grafiği">${cols}</svg>
+    <p class="small muted">Değerler ₺. ${legend(ORIGIN, ORIGIN_COLOR).replace('class="legend"', 'class="legend" style="display:inline-flex"')}</p>`;
+}
+async function makePlan(){
+  if (!sampleFn) return;
+  const F = factorsOf(S.profile), { byDow, rows } = patterns();
+  const byMain = {}; rows.forEach(r => { const k = MAINS[r.main].name + ' (' + ORIGIN[MAINS[r.main].origin] + ')'; byMain[k] ||= { kg:0, tl:0 }; byMain[k].kg = r1(byMain[k].kg + r.kg); byMain[k].tl = Math.round(byMain[k].tl + tlOf(r, F)); });
+  const pats = Object.values(byDow).flat().slice(0, 16).map(p => ({ gun:DAYS[p.w], yemek:p.name, ort_fazla_kg:+p.fazlaAvg.toFixed(1), ort_tabak_kg:+p.tabakAvg.toFixed(1), kg_maliyet_tl:Math.round(rawFactor(p) * F[p.main].tl), kg_co2:+(rawFactor(p) * F[p.main].co2).toFixed(2) }));
+  const prompt = `Sen bir toplu yemek mutfağına gıda israfı danışmanlığı yapıyorsun. İşletme: ${S.profile.type}.
+Son 4 haftanın atığı, ana bileşene göre: ${JSON.stringify(byMain)}
+Haftanın günlerine göre tekrarlayan örüntüler: ${JSON.stringify(pats)}
+Porsiyon ${S.profile.portionKg} kg.
+
+Önümüzdeki hafta için en fazla 8 somut eylem öner. Mali kaybı ve karbonu yüksek olan hayvansal ürünlere öncelik ver. Her eylem için haftalık tasarrufu, kg_maliyet_tl ve kg_co2 değerlerini kullanarak hesapla.
+Yalnızca şu biçimde JSON ver:
+{"actions":[{"gun":"Cuma","yemek":"Pirinç pilavı","eylem":"Üretimi 9 porsiyon azalt","tasarruf_tl":250,"co2_kg":9}],"ozet":"Tek cümlelik Türkçe özet"}
+gun şunlardan biri olmalı: ${DAYS.join(', ')}. eylem en fazla 6 kelime olsun.`;
+  planCtl = new AbortController(); planState = 'loading'; render();
+  try {
+    const res = await sampleFn.json(prompt, { signal:planCtl.signal });
+    const acts = (Array.isArray(res?.actions) ? res.actions : []).filter(a => DAYS.includes(a?.gun) && a?.yemek).slice(0, 8)
+      .map(a => ({ gun:a.gun, yemek:String(a.yemek).slice(0, 40), eylem:String(a.eylem || '').slice(0, 60), main:mainByName(a.yemek), tl:Math.max(0, Number(a.tasarruf_tl) || 0), co:Math.max(0, Number(a.co2_kg) || 0) }))
+      .sort((a, b) => b.tl - a.tl);
+    if (!acts.length) throw { code:'empty_completion' };
+    planData = { acts, ozet:String(res?.ozet || '').slice(0, 240) };
+    planState = 'done';
+  } catch (e) {
+    if (e?.code === 'cancelled') planState = 'idle';
+    else {
+      if (PERMANENT.includes(e?.code)) aiBlocked = true;
+      planErr = PERMANENT.includes(e?.code) ? 'Yapay zekâ bu görünümde kullanılamıyor.' : (ERR[e?.code] || 'Bağlantı kesildi. Tekrar deneyin.');
+      planState = 'error';
+    }
+  } finally { planCtl = null; render(); }
+}
+
+/* =========================================================
+   ROTA MOTORU · HARİTA · ARAÇ TAKİBİ
+   ========================================================= */
+const DEPOT = { x:9, y:86, name:'Belediye garajı' };
+const DEMO_POS = { ornek:[36,26], kampus:[78,16], sifa:[64,58], keyif:[22,48] };
+const KM_PER_UNIT = 0.075, SPEED_KMH = 22, SERVICE_MIN = 6;
+function posOf(u){
+  if (DEMO_POS[u]) return DEMO_POS[u];
+  let h = 7; for (const c of u) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+  return [16 + h % 74, 10 + (h >>> 7) % 66];
+}
+const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y) * KM_PER_UNIT;
+const toMin = s => { const [a, b] = String(s || '16:00').split(':').map(Number); return a * 60 + (b || 0); };
+const toHM = m => `${pad(Math.floor(m / 60) % 24)}:${pad(Math.floor(m % 60))}`;
+function pathKm(seq){ let p = DEPOT, d = 0; seq.forEach(s => { d += dist(p, s); p = s; }); return d + dist(p, DEPOT); }
+function optimize(pts, start, end){
+  let rest = [...pts], out = [], cur = start;
+  while (rest.length) { rest.sort((a, b) => dist(cur, a) - dist(cur, b)); cur = rest.shift(); out.push(cur); }
+  const cost = a => { let p = start, d = 0; a.forEach(s => { d += dist(p, s); p = s; }); return d + dist(p, end); };
+  let improved = true;
+  while (improved) {
+    improved = false;
+    for (let i = 0; i < out.length - 1; i++) for (let k = i + 1; k < out.length; k++) {
+      const c = [...out.slice(0, i), ...out.slice(i, k + 1).reverse(), ...out.slice(k + 1)];
+      if (cost(c) < cost(out) - 1e-9) { out = c; improved = true; }
+    }
+  }
+  return out;
+}
+function districtStops(district){
+  return restaurantsIn(district).map(({ u, data }) => {
+    const pend = rowsOf(data).filter(r => !r.picked);
+    const byRoute = {}; pend.forEach(r => byRoute[r.route] = (byRoute[r.route] || 0) + r.kg);
+    const todays = data.pickups.filter(p => p.date === today());
+    const [x, y] = posOf(u);
+    return { u, data, name:data.profile.name || u, type:data.profile.type, x, y, pendKg:sum(pend, r => r.kg), byRoute,
+      ready:data.ready?.date === today() ? data.ready.at : null, doneKg:sum(todays, p => p.kg), doneAt:todays.length ? todays[todays.length - 1].created.slice(11) : null };
+  });
+}
+function buildRoute(district){
+  const muni = municipalityFor(district) || DEFAULT_B;
+  const all = districtStops(district), open = all.filter(s => s.pendKg > 0);
+  const onlyReady = !!muni.onlyReady;
+  let R = open.filter(s => s.ready), N = onlyReady ? [] : open.filter(s => !s.ready);
+  R = optimize(R, DEPOT, N.length ? N.reduce((c, s) => ({ x:c.x + s.x / N.length, y:c.y + s.y / N.length }), { x:0, y:0 }) : DEPOT);
+  N = optimize(N, R.length ? R[R.length - 1] : DEPOT, DEPOT);
+  const seq = [...R, ...N];
+  const naive = [...open.filter(s => s.ready).sort((a, b) => a.ready.localeCompare(b.ready)), ...(onlyReady ? [] : open.filter(s => !s.ready).sort((a, b) => a.name.localeCompare(b.name, 'tr')))];
+  const depart = toMin(muni.collectTime);
+  const segs = []; let t = depart, p = DEPOT;
+  seq.forEach((s, i) => {
+    const dt = dist(p, s) / SPEED_KMH * 60;
+    segs.push({ kind:'drive', a:p, b:s, t0:t, t1:t + dt, to:i }); t += dt;
+    s.eta = t; s.idx = i;
+    segs.push({ kind:'stop', s, t0:t, t1:t + SERVICE_MIN, i }); t += SERVICE_MIN;
+    p = s;
+  });
+  if (seq.length) { const dt = dist(p, DEPOT) / SPEED_KMH * 60; segs.push({ kind:'drive', a:p, b:DEPOT, t0:t, t1:t + dt, to:-1 }); t += dt; }
+  return { seq, all, open, skipped: onlyReady ? open.filter(s => !s.ready) : [], km:pathKm(seq), naiveKm:pathKm(naive), segs, depart, end:t, onlyReady,
+    kg:sum(seq, s => s.pendKg), muni };
+}
+function posAt(route, T){
+  const seg = route.segs.find(s => T >= s.t0 && T < s.t1);
+  if (!seg) return DEPOT;
+  if (seg.kind === 'stop') return seg.s;
+  const f = (T - seg.t0) / (seg.t1 - seg.t0);
+  return { x:seg.a.x + (seg.b.x - seg.a.x) * f, y:seg.a.y + (seg.b.y - seg.a.y) * f };
+}
+function statusText(route, T, focus){
+  if (!route.seq.length) return 'Bugün rota yok.';
+  const me = focus ? route.seq.find(s => s.u === focus) : null;
+  const meTxt = () => me ? (T < me.eta ? ` Size tahmini varış ${toHM(me.eta)} (~${Math.max(1, Math.ceil(me.eta - T))} dk).` : T < me.eta + SERVICE_MIN ? '' : ' Sizin atığınız alındı.') : '';
+  if (T < route.depart) return `Araç garajda, ${toHM(route.depart)}'da yola çıkacak.${me ? ` Size tahmini varış ${toHM(me.eta)}.` : ''}`;
+  if (T >= route.end) return `Bugünkü tur ${toHM(route.depart)}–${toHM(route.end)} arasında tamamlandı.${me ? ' Teslim onayı bekleniyor.' : ''} Yeniden izlemek için simülasyonu başlatın.`;
+  const seg = route.segs.find(s => T >= s.t0 && T < s.t1);
+  if (seg.kind === 'stop') return seg.s.u === focus ? 'Araç kapınızda, atıklar teslim alınıyor.' : `Araç ${seg.i + 1}. durakta: ${seg.s.name}.${meTxt()}`;
+  if (seg.to === -1) return 'Araç son duraktan çıktı, garaja dönüyor.';
+  return `Araç yolda → ${seg.to + 1}. durak (${route.seq[seg.to].name}), ~${Math.max(1, Math.ceil(seg.t1 - T))} dk.${me && me !== route.seq[seg.to] ? meTxt() : me ? '' : ''}`;
+}
+const MW = 360, MH = 300, MX = x => x / 100 * MW, MY = y => y / 100 * MH;
+function mapSVG(route, focus){
+  const pts = [DEPOT, ...route.seq, ...(route.seq.length ? [DEPOT] : [])].map(p => `${MX(p.x).toFixed(1)},${MY(p.y).toFixed(1)}`).join(' ');
+  const others = route.all.filter(s => !route.seq.includes(s));
+  const lbl = (s, dx) => { const L = MX(s.x) > MW * 0.6; return `<text x="${MX(s.x) + (L ? -dx : dx)}" y="${MY(s.y) + 4}" text-anchor="${L ? 'end' : 'start'}" style="font-size:10px; font-weight:600; fill:var(--ink); paint-order:stroke; stroke:var(--sunk); stroke-width:3px">${esc(s.name.length > 18 ? s.name.slice(0, 17) + '…' : s.name)}</text>`; };
+  return `<svg class="map" viewBox="0 0 ${MW} ${MH}" role="img" aria-label="Toplama rotası haritası">
+    <rect width="${MW}" height="${MH}" rx="18" style="fill:var(--sunk)"/>
+    <path d="M0 40 C 70 70, 110 60, 160 110 S 250 190, 360 210" style="fill:none; stroke:var(--mint); stroke-width:16; stroke-linecap:round"/>
+    <text x="250" y="182" style="font-size:9px; fill:var(--muted); font-style:italic">Kağıthane Deresi</text>
+    <ellipse cx="300" cy="80" rx="38" ry="24" style="fill:var(--mint)"/><ellipse cx="80" cy="200" rx="30" ry="18" style="fill:var(--mint)"/>
+    ${[[0,150,360,140],[120,0,135,300],[250,0,230,300],[0,250,360,262],[0,95,360,60]].map(([a,b,c,d]) => `<line x1="${a}" y1="${b}" x2="${c}" y2="${d}" style="stroke:var(--surface); stroke-width:7; stroke-linecap:round"/>`).join('')}
+    ${route.seq.length ? `<polyline points="${pts}" style="fill:none; stroke:var(--green); stroke-width:3.5; stroke-linejoin:round; stroke-dasharray:${route.onlyReady ? '0' : '0'}"/>` : ''}
+    ${others.map(s => `<g><circle cx="${MX(s.x)}" cy="${MY(s.y)}" r="7" style="fill:var(--slate)"/><text x="${MX(s.x)}" y="${MY(s.y) + 3.5}" text-anchor="middle" style="font-size:9px; fill:#fff; font-weight:700">${s.pendKg > 0 ? '·' : '✓'}</text>${lbl(s, 10)}</g>`).join('')}
+    <g><rect x="${MX(DEPOT.x) - 11}" y="${MY(DEPOT.y) - 11}" width="22" height="22" rx="6" style="fill:var(--ink)"/><text x="${MX(DEPOT.x)}" y="${MY(DEPOT.y) + 4}" text-anchor="middle" style="font-size:11px; fill:var(--bg); font-weight:800">G</text>
+      <text x="${MX(DEPOT.x) + 15}" y="${MY(DEPOT.y) + 4}" style="font-size:10px; fill:var(--muted); font-weight:600">Garaj</text></g>
+    ${route.seq.map((s, i) => { const me = s.u === focus; return `<g class="pin" id="pin-${i}">
+      ${me ? `<circle cx="${MX(s.x)}" cy="${MY(s.y)}" r="17" style="fill:none; stroke:var(--green); stroke-width:3; opacity:.5"/>` : ''}
+      <circle class="b" cx="${MX(s.x)}" cy="${MY(s.y)}" r="11" style="fill:${s.ready ? 'var(--green)' : 'var(--wheat)'}; stroke:var(--surface); stroke-width:2"/>
+      <text x="${MX(s.x)}" y="${MY(s.y) + 4}" text-anchor="middle" style="font-size:11px; fill:#fff; font-weight:800">${i + 1}</text>
+      ${lbl(me ? { ...s, name:'Siz · ' + s.name } : s, 15)}</g>`; }).join('')}
+    <g id="truck" transform="translate(${MX(DEPOT.x)} ${MY(DEPOT.y)})">
+      <circle r="13" style="fill:var(--tomato); stroke:var(--surface); stroke-width:2.5"/>
+      <g transform="translate(-8 -8) scale(0.66)" style="fill:none; stroke:#fff; stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round">${IC.toplama}</g>
+    </g>
+  </svg>`;
+}
+function trackPanel(route, focus){
+  return `<div class="track">
+    <div class="trackstat"><span class="live"></span><span id="trackStatus">${esc(statusText(route, clockMin(), focus))}</span></div>
+    ${mapSVG(route, focus)}
+    <div class="legend"><span><i class="dot" style="background:var(--green)"></i>Hazır bildirdi</span><span><i class="dot" style="background:var(--wheat)"></i>Bildirim yok</span><span><i class="dot" style="background:var(--tomato)"></i>Araç</span><span><i class="dot" style="background:var(--slate)"></i>Rotada değil</span></div>
+    <button class="btn line block small" id="simBtn" data-action="sim">${sim.on ? 'Simülasyonu durdur' : 'Canlı takibi simüle et (1 sa ≈ 80 sn)'}</button>
+    <p class="small muted">Şematik harita. Gerçek GPS bağlantısı yerine araç, rota ve saatlere göre konumlandırılır.</p>
+  </div>`;
+}
+let sim = { on:false, t0:0, start:0, speed:45 }, rafId = null, trackCtx = null;
+function clockMin(){
+  if (sim.on) return sim.t0 + (performance.now() - sim.start) / 1000 * sim.speed / 60;
+  const n = new Date(); return n.getHours() * 60 + n.getMinutes() + n.getSeconds() / 60;
+}
+function tick(){
+  const el = $('#truck');
+  if (!el || !trackCtx) { rafId = null; return; }
+  const { route, focus } = trackCtx, T = clockMin(), p = posAt(route, T);
+  el.setAttribute('transform', `translate(${MX(p.x).toFixed(1)} ${MY(p.y).toFixed(1)})`);
+  const st = $('#trackStatus'); const txt = statusText(route, T, focus); if (st && st.textContent !== txt) st.textContent = txt;
+  route.seq.forEach((s, i) => $('#pin-' + i)?.classList.toggle('visited', T >= s.eta + SERVICE_MIN));
+  if (sim.on && T > route.end + 2) { sim.on = false; const b = $('#simBtn'); if (b) b.textContent = 'Simülasyonu tekrar izle'; }
+  rafId = requestAnimationFrame(tick);
+}
+
+/* =========================================================
+   RESTORAN: Günlük toplama
+   ========================================================= */
+function vToplama(){
+  const rows = allRows(), pend = rows.filter(r => !r.picked);
+  const pendKg = sum(pend, r => r.kg);
+  const route = buildRoute(S.profile.district);
+  const muni = municipalityFor(S.profile.district);
+  const muniName = muni?.name || `${S.profile.district || 'İlçe'} Belediyesi`;
+  const me = route.seq.find(s => s.u === user);
+  const todays = S.pickups.filter(p => p.date === today());
+  const todayKg = sum(todays, p => p.kg);
+  const ready = S.ready?.date === today();
+  const T = clockMin();
+  let hero, sub;
+  if (pendKg > 0 && me) {
+    const T0 = clockMin();
+    hero = T0 < me.eta ? `Araç bugün tahminen ${toHM(me.eta)}'te gelecek.` : T0 < me.eta + SERVICE_MIN ? 'Araç şu an kapınızda.' : `Araç ${toHM(me.eta)}'te uğradı; teslim onayı bekleniyor.`;
+    sub = `${fmt(pendKg)} kg atığınız ${muniName} rotasında ${me.idx + 1}. durak. Rota ${toHM(route.depart)}'da garajdan başlıyor.`;
+  }
+  else if (pendKg > 0) { hero = `Bugün ${fmt(pendKg)} kg atık toplanmayı bekliyor.`; sub = route.onlyReady ? 'Belediye bugün yalnızca hazır bildiren restoranlara uğruyor. Rotaya girmek için ekibe bildirin.' : `${muniName} ekibi ${toHM(route.depart)}'da rotaya başlar.`; }
+  else if (todayKg > 0) { hero = `Bugünkü atık toplandı: ${fmt(todayKg)} kg.`; sub = `Saat ${todays[todays.length - 1].created.slice(11)}'de teslim alındı.`; }
+  else { hero = 'Bugün toplanacak atık yok.'; sub = `Yemek eklediğinizde ${muniName} rotasına otomatik eklenirsiniz.`; }
+  const step = todayKg > 0 && pendKg === 0 ? 4 : (me && T >= route.depart) ? 3 : (ready && pendKg > 0) ? 2 : pendKg > 0 ? 1 : 0;
+  const flow = ['Kaydedildi', 'Hazır bildirildi', 'Araç yolda', 'Akışlara teslim'].map((t, i) => `<div class="${i < step ? 'on' : ''}"><span class="c">${i < step ? '✓' : i + 1}</span>${t}</div>`).join('');
+  trackCtx = me || (pendKg === 0 && route.seq.length) ? { route, focus:user } : null;
+  const byRoute = {}; pend.forEach(r => byRoute[r.route] = (byRoute[r.route] || 0) + r.kg);
+  const D = S.profile.district || 'İlçe';
+  const dest = { gida:'Eşleşen gıda bankası / STK', mama:`${D} barınakları`, kompost:`${D} park ve bahçeleri`, biyogaz:'Lisanslı geri kazanım tesisi' };
+  const days = {}; S.pickups.forEach(p => (days[p.date] ||= []).push(p));
+  const hist = Object.entries(days).sort((a, b) => b[0].localeCompare(a[0])).slice(0, 10);
+  return `<h2 class="hero num">${hero}</h2>
+  <p class="hero-sub">${sub}</p>
+  <div class="flow" aria-label="Taşıma adımları">${flow}</div>
+  ${pendKg > 0 ? `<div class="stack" style="margin-top:16px">
+    ${ready ? `<span class="chip good">Ekibe bildirildi · ${S.ready.at} · rotada önceliklisiniz</span>` : `<button class="btn block" data-action="ready">Atıklar hazır, ekibe bildir</button>`}
+  </div>` : ''}
+  ${trackCtx ? `<section class="section panel"><div class="section-head"><h2>Aracı takip et</h2>${route.seq.length ? `<span class="small muted">${route.seq.length} durak · ${fmt(route.km)} km</span>` : ''}</div>${trackPanel(route, user)}</section>` : ''}
+  ${pendKg > 0 ? `<button class="btn line block small section" data-action="self-collect">Ekip teslim aldı olarak işaretle</button>` : ''}
+  <section class="section">
+    <div class="section-head"><h2>Bugün hangi akışa ne gidiyor?</h2></div>
+    <div class="tiles">${Object.entries(ROUTES).map(([k, r]) => `<div class="tile" style="--c:${r.color}"><b class="num">${fmt(byRoute[k] || 0)} kg</b><span>${r.short} · ${esc(dest[k])}</span></div>`).join('')}</div>
+  </section>
+  <section class="section panel">
+    <div class="section-head"><h2>Toplama geçmişi</h2><span class="small muted">son 10 gün</span></div>
+    <ul class="list">${hist.map(([d, ps]) => `<li><div><strong>${DAYS[dow(d)]}, ${dm(d)}</strong><div class="small muted">${ps.map(p => `${ROUTES[p.route].short} ${fmt(p.kg)} kg`).join(' · ')}</div></div><span class="num">${fmt(sum(ps, p => p.kg))} kg</span></li>`).join('') || '<li class="muted">Henüz toplama yok.</li>'}</ul>
+  </section>`;
+}
+
+/* =========================================================
+   RESTORAN: Profil (etki burada)
+   ========================================================= */
+function impactBlock(rowsAll, profile, F){
+  const delivered = rowsAll.filter(r => r.picked);
+  const dKg = sum(delivered, r => r.kg);
+  const byRoute = k => sum(delivered.filter(r => r.route === k), r => r.kg);
+  const avoid = rowsAll.filter(r => r.type !== 'hazirlik');
+  return { dKg, html:`<div class="impact">
+    <div><div class="v num">${fmt(byRoute('gida') / profile.mealKg, 0)}</div><p class="muted small">öğün karşılığı yemek gıda bankası ve STK'lara ulaştı</p></div>
+    <div><div class="v num">${fmt(byRoute('mama'))} kg</div><p class="muted small">artık barınak mama hattına gitti</p></div>
+    <div><div class="v num">${fmt(byRoute('kompost'))} kg</div><p class="muted small">artık park, bahçe ve tarım alanları için komposta gitti</p></div>
+    <div><div class="v num">${fmt(dKg * LANDFILL, 0)} kg</div><p class="muted small">CO₂e metan salımı çöp sahasından uzak tutuldu</p></div>
+    <div><div class="v num">${fmtTL(sum(avoid, r => tlOf(r, F)))}</div><p class="muted small">toplam önlenebilir israfın mali karşılığı</p></div>
+    <div><div class="v num">${fmt(sum(avoid, r => co2Of(r, F)), 0)} kg</div><p class="muted small">CO₂e, önlenebilir israfın karbon ayak izi</p></div>
+  </div>` };
+}
+function menuRowsForForm(){
+  const menu = Object.values(S.profile.menu || {}), have = new Set(menu.map(m => norm(m.name)));
+  const freq = {};
+  S.entries.forEach(e => e.items.forEach(i => { if (i.name && i.type !== 'hazirlik' && !have.has(norm(i.name))) freq[i.name] = (freq[i.name] || 0) + 1; }));
+  const extra = Object.entries(freq).sort((a, b) => b[1] - a[1]).slice(0, Math.max(0, 14 - menu.length)).map(([n]) => ({ name:n }));
+  return [...menu, ...extra].map(m => ({ ...m, fixed:true })).concat([{ name:'', fixed:false }, { name:'', fixed:false }]);
+}
+function vProfil(){
+  const P = S.profile, F = factorsOf(P), rows = allRows();
+  const dates = [...new Set(rows.map(r => r.date))].sort();
+  let trend = '';
+  const svP = savings(S);
+  if (svP) { const pct = Math.round(svP.total.pct); trend = pct >= 0 ? `<span class="chip good">Önlenebilir atık %${pct} azaldı</span>` : `<span class="chip bad">Önlenebilir atık %${-pct} arttı</span>`; }
+  else if (dates.length >= 10) {
+    const first = dates.slice(0, 7), last = dates.slice(-7), av = r => r.type !== 'hazirlik';
+    const a = sum(rows.filter(r => first.includes(r.date) && av(r)), r => r.kg) / 7;
+    const b = sum(rows.filter(r => last.includes(r.date) && av(r)), r => r.kg) / 7;
+    if (a > 0) { const pct = Math.round((a - b) / a * 100); trend = pct >= 0 ? `<span class="chip good">Önlenebilir atık %${pct} azaldı</span>` : `<span class="chip bad">Önlenebilir atık %${-pct} arttı</span>`; }
+  }
+  const imp = impactBlock(rows, P, F);
+  const split = originSplit(rows, F);
+  return `<div class="profile-head">
+    <div class="avatar">${esc(initials(P.name))}</div>
+    <div style="min-width:0"><h2>${esc(P.name || 'Restoranım')}</h2><p class="small muted">${esc(P.type)} · ${esc(P.district)}</p><p class="small muted">@${esc(user)} · ${dates.length} gün kayıt</p></div>
+  </div>
+  <div class="row" style="margin-top:10px">${trend}</div>
+
+  <section class="section">
+    <h2 class="hero num" style="font-size:26px">Atığımızın ${fmt(imp.dKg)} kg'ı çöp yerine şehre kazandırıldı.</h2>
+    <p class="hero-sub small">Günlük toplamalarla teslim edilen atığa göre hesaplanır.</p>
+    <div style="margin-top:12px">${rows.length ? imp.html : '<p class="muted">Etkiyi görmek için atık kaydedin.</p>'}</div>
+  </section>
+
+  ${rows.length ? `<section class="section panel"><div class="section-head"><h2>Hayvansal / bitkisel</h2><span class="small muted">tüm kayıtlar</span></div>${split.html}</section>` : ''}
+
+  <section class="section panel">
+    <div class="section-head"><h2>Kalkınma hedeflerine katkımız</h2></div>
+    <div class="stack">
+      <div class="sdg"><b>SDG 12.3</b><p>Kişi başı gıda israfını 2030'a kadar yarıya indirmek: israfı mutfakta ölçüp azaltıyoruz.</p></div>
+      <div class="sdg"><b>SDG 13</b><p>İklim eylemi: özellikle yüksek karbonlu hayvansal ürün israfını hedefliyoruz.</p></div>
+    </div>
+  </section>
+
+  <form class="section panel stack" id="profileForm">
+    <h2>İşletme bilgileri</h2>
+    <label class="f">Restoran adı<input type="text" name="name" value="${esc(P.name)}"></label>
+    <div class="fields">
+      <label class="f">İşletme türü<select name="type">${['Restoran','Okul / üniversite','Yurt','Hastane','Kamu kurumu','Otel','Şirket yemekhanesi'].map(t => `<option ${t === P.type ? 'selected' : ''}>${t}</option>`).join('')}</select></label>
+      <label class="f">İlçe<input type="text" name="district" value="${esc(P.district)}"></label>
+      <label class="f">Standart porsiyon (kg)<input type="number" name="portionKg" min="0.05" step="0.05" value="${P.portionKg}"></label>
+      <label class="f">Aylık ciro (₺)<input type="number" name="ciro" min="0" step="1000" value="${P.monthly?.ciro || ''}"></label>
+      <label class="f wide">Aylık gıda alımı (₺)<input type="number" name="alim" min="0" step="1000" value="${P.monthly?.alim || ''}"></label>
+    </div>
+    <p class="small muted">Ciro, alım ve menü bilgileri yalnızca sizde kalır; belediye bu bilgileri görmez.</p>
+    <h3 style="margin-top:6px">Hammadde alış fiyatlarınız</h3>
+    <p class="small muted">Tedarikçinize ödediğiniz kilogram fiyatını girin. Boş bırakılan satırlarda tahmini piyasa fiyatı kullanılır.</p>
+    <div class="scroll-x"><table class="ftable"><thead><tr><th>Ana bileşen</th><th>Alış ₺/kg</th><th></th></tr></thead><tbody>
+      ${Object.entries(MAINS).map(([k, m]) => `<tr><td><span class="dot" style="background:${ORIGIN_COLOR[m.origin]}; margin-right:6px"></span>${m.name}</td><td><input type="number" step="1" min="0" name="tl_${k}" value="${F[k].own ? F[k].tl : ''}" placeholder="${m.tl}"></td><td>${F[k].own ? '<span class="tag own">sizin</span>' : '<span class="tag est">tahmini</span>'}</td></tr>`).join('')}
+    </tbody></table></div>
+
+    <h3 style="margin-top:6px">Menü ve satış</h3>
+    <p class="small muted">Satış fiyatı ve günlük ortalama satış adedini girin; Pano'da her yemeğin üretiminin yüzde kaçının atıldığı ve aylık maliyeti hesaplanır.</p>
+    <div class="scroll-x"><table class="ftable"><thead><tr><th>Yemek</th><th>Satış ₺</th><th>Günlük satış</th><th>Porsiyon g</th></tr></thead><tbody>
+      ${menuRowsForForm().map((m, i) => `<tr><td>${m.fixed ? `${esc(m.name)}<input type="hidden" name="mn_${i}" value="${esc(m.name)}">` : `<input class="name" type="text" name="mn_${i}" value="" placeholder="Yeni yemek">`}</td>
+        <td><input class="sm" type="number" min="0" step="5" name="mp_${i}" value="${m.price || ''}"></td>
+        <td><input class="sm" type="number" min="0" step="1" name="md_${i}" value="${m.daily || ''}"></td>
+        <td><input class="sm" type="number" min="0" step="10" name="mg_${i}" value="${m.g || ''}" placeholder="${Math.round(P.portionKg * 1000)}"></td></tr>`).join('')}
+    </tbody></table></div>
+
+    <details>
+      <summary class="link small" style="cursor:pointer">Karbon katsayıları (sabit)</summary>
+      <p class="small muted" style="margin-top:8px">Karbon ayak izi uluslararası kabul gören kaynaklardan alınır ve değiştirilemez: Poore &amp; Nemecek (2018), <i>Science</i> 360:987–992 (Our World in Data); karışık atık için FAO (2013) Food Wastage Footprint ortalaması. Pişmiş yemek, yemeğe göre çiğ ana bileşen karşılığına çevrilerek hesaplanır (örn. 1 kg pilav ≈ 0,4 kg pirinç). Çöp sahası metanı: IPCC 2006 Atık Kılavuzu varsayılanları ve AR5 küresel ısınma potansiyeliyle 1 kg gıda atığı ≈ ${fmt(LANDFILL, 2)} kg CO₂e.</p>
+      <div class="scroll-x"><table class="ftable"><thead><tr><th>Ana bileşen</th><th>kg CO₂e/kg</th><th>Kaynak ürün</th></tr></thead><tbody>
+        ${Object.values(MAINS).map(m => `<tr><td>${m.name}</td><td class="ro">${fmt(m.co2, 2)}</td><td class="ro">${m.src}</td></tr>`).join('')}
+      </tbody></table></div>
+    </details>
+    <button type="submit" class="btn block">Bilgileri kaydet</button>
+  </form>
+
+  <div class="stack section">
+    <div class="fields">
+      <button class="btn ghost small" data-action="demo">Örnek veri yükle</button>
+      <button class="btn ghost small" data-action="reset">Kayıtları sil</button>
+    </div>
+    <button class="btn line block" data-action="logout">Çıkış yap</button>
+  </div>`;
+}
+
+/* =========================================================
+   TASARRUF
+   ========================================================= */
+/*
+  Tasarruf yöntemi:
+  - Karşılaştırma noktası: restoranın ilk 7 kayıt günü (her haftanın günü bir kez).
+  - Sonraki her TAMAMLANMIŞ gün (bugün hariç), aynı yemeğin aynı haftanın günündeki ilk hafta değeriyle karşılaştırılır.
+  - Beklenen = ilk hafta değeri, gerçekleşen = o günün değeri. Tasarruf = beklenen − gerçekleşen.
+  - İlk haftada hiç olmayan yemekler/günler karşılaştırılamaz; toplamlara katılmaz, ayrıca listelenir.
+  - Hazırlık artığı (kabuk vb.) önlenemez sayılır, hesaba girmez.
+*/
+function savings(data){
+  const F = factorsOf(data.profile), t = today(), SEP = '\u0001';
+  const rows = rowsOf(data).filter(r => r.type !== 'hazirlik' && r.date < t);
+  const dates = [...new Set(data.entries.map(e => e.date))].filter(d => d < t).sort();
+  if (dates.length < 8) return null;
+  const baseEnd = addDays(dates[0], 6);
+  const later = dates.filter(d => d > baseEnd);
+  if (!later.length) return null;
+  const nameOf = r => r.name.trim() || MAINS[r.main].name;
+  const base = {}, act = {}, mainOf = {};
+  rows.forEach(r => {
+    const n = nameOf(r); mainOf[n] ||= r.main;
+    if (r.date <= baseEnd) base[n + SEP + dow(r.date)] = (base[n + SEP + dow(r.date)] || 0) + r.kg;
+    else act[n + SEP + r.date] = (act[n + SEP + r.date] || 0) + r.kg;
+  });
+  const dish = {}, unmatched = {};
+  later.forEach(d => {
+    const w = dow(d), names = new Set();
+    Object.keys(base).forEach(k => { const [n, ww] = k.split(SEP); if (+ww === w) names.add(n); });
+    names.forEach(n => {
+      const e = base[n + SEP + w], a = act[n + SEP + d] || 0;
+      dish[n] ||= { exp:0, act:0 }; dish[n].exp += e; dish[n].act += a;
+    });
+    Object.keys(act).forEach(k => { const [n, dd] = k.split(SEP); if (dd === d && !(base[n + SEP + w] > 0)) unmatched[n] = (unmatched[n] || 0) + act[k]; });
+  });
+  const mk = (name, main, exp, actual) => { const kg = exp - actual, f = F[main] || F.diger, rw = rawFactor({ name, main }); return { name, main, exp, act:actual, kg, pct: exp ? kg / exp * 100 : 0, tl:kg * rw * f.tl, co:kg * rw * f.co2 }; };
+  const dishes = Object.entries(dish).map(([n, v]) => mk(n, mainOf[n], v.exp, v.act)).sort((a, b) => b.tl - a.tl);
+  const byMain = {};
+  dishes.forEach(d => { const x = byMain[d.main] ||= { name:MAINS[d.main].name, main:d.main, exp:0, act:0, tl:0, co:0 }; x.exp += d.exp; x.act += d.act; x.tl += d.tl; x.co += d.co; });
+  const mains = Object.values(byMain).map(x => ({ ...x, kg:x.exp - x.act, pct: x.exp ? (x.exp - x.act) / x.exp * 100 : 0 })).sort((a, b) => b.tl - a.tl);
+  const del = rowsOf(data).filter(r => r.picked);
+  const streams = Object.keys(ROUTES).map(k => { const rs = del.filter(r => r.route === k), kg = sum(rs, r => r.kg); return { k, kg, methane:kg * LANDFILL, tl:sum(rs, r => tlOf(r, F)) }; });
+  const exp = sum(dishes, d => d.exp), actual = sum(dishes, d => d.act);
+  return { dishes, mains, streams, base:[dates[0], baseEnd], range:[later[0], later[later.length - 1]], days:later.length,
+    unmatched:Object.entries(unmatched).map(([n, kg]) => ({ name:n, kg })).sort((a, b) => b.kg - a.kg),
+    total:{ exp, act:actual, kg:exp - actual, pct: exp ? (exp - actual) / exp * 100 : 0, tl:sum(dishes, d => d.tl), co:sum(dishes, d => d.co) } };
+}
+function saveRows(list){
+  const max = Math.max(1, ...list.map(x => Math.abs(x.tl)));
+  return list.map(x => {
+    const neg = x.kg < -0.05, o = x.main ? MAINS[x.main].origin : null, p = Math.round(Math.abs(x.pct));
+    return `<div class="save">
+      <div class="top"><div style="min-width:0"><strong>${esc(x.name)}</strong>${o ? ` <span class="chip ${o}">${ORIGIN[o]}</span>` : ''}${x.sub ? `<div class="small muted">${esc(x.sub)}</div>` : ''}</div>
+        <span class="small ${neg ? 'err' : ''}" style="white-space:nowrap; font-weight:700; ${neg ? '' : 'color:var(--green)'}">%${p} ${neg ? 'arttı' : 'azaldı'}</span></div>
+      <div class="three">
+        <div><b class="num ${neg ? 'neg' : ''}">${neg ? '+' : ''}${fmt(Math.abs(x.kg))} kg</b>${neg ? 'fazla israf' : 'önlenen israf'}</div>
+        <div><b class="num ${neg ? 'neg' : ''}">${fmtTL(Math.abs(x.tl))}</b>${neg ? 'ek kayıp' : 'tasarruf'}</div>
+        <div><b class="num ${neg ? 'neg' : ''}">${fmt(Math.abs(x.co), 0)} kg</b>CO₂e</div>
+      </div>
+      <div class="small muted num">Beklenen ${fmt(x.exp)} kg → gerçekleşen ${fmt(x.act)} kg</div>
+      <div class="bar"><i style="width:${(Math.abs(x.tl) / max * 100).toFixed(1)}%; ${neg ? 'background:var(--tomato)' : ''}"></i></div>
+    </div>`;
+  }).join('');
+}
+function streamRows(streams, mealKg){
+  const note = { gida: s => `≈ ${fmt(s.kg / mealKg, 0)} öğün ihtiyaç sahiplerine ulaştı`, mama: () => 'barınaklara mama hammaddesi olarak gitti', kompost: () => 'park, bahçe ve tarım alanlarına kompost oldu', biyogaz: () => 'lisanslı tesiste enerjiye dönüştü' };
+  return streams.map(s => `<div class="save">
+    <div class="top"><strong><i class="dot" style="background:${ROUTES[s.k].color}; margin-right:6px"></i>${ROUTES[s.k].name}</strong></div>
+    <div class="three" style="grid-template-columns:1fr 1fr">
+      <div><b class="num">${fmt(s.kg)} kg</b>çöpten kurtarıldı</div>
+      <div><b class="num">${fmt(s.methane, 0)} kg</b>CO₂e metan önlendi</div>
+    </div>
+    <p class="small muted">${note[s.k](s)}</p>
+  </div>`).join('');
+}
+const methodNote = sv => `İlk haftanız (${dm(sv.base[0])}–${dm(sv.base[1])}) karşılaştırma noktasıdır. ${dm(sv.range[0])}–${dm(sv.range[1])} arasındaki ${sv.days} tamamlanmış günün her biri, aynı yemeğin ilk haftadaki aynı günüyle karşılaştırıldı. Bugün ve hazırlık artıkları dahil değildir.`;
+let saveBy = 'dish';
+function vTasarruf(){
+  const sv = savings(S);
+  if (!sv) return `<h2 class="hero">Tasarrufu görmek için en az 8 tamamlanmış kayıt günü gerekiyor.</h2>
+    <p class="hero-sub">İlk haftanız karşılaştırma noktası olur; sonraki günlerde nelerden ne kadar tasarruf ettiğiniz burada tek tek görünür.</p>
+    <div class="stack" style="margin-top:22px"><button class="btn block" data-nav="kaydet">Yemek ekle</button><button class="btn ghost block" data-action="demo">Örnek verilerle dene</button></div>`;
+  const T = sv.total, list = saveBy === 'dish' ? sv.dishes : sv.mains, up = T.kg >= 0;
+  return `<h2 class="hero num">${up ? `Önlenebilir israf %${Math.round(T.pct)} azaldı.` : `Önlenebilir israf %${Math.round(-T.pct)} arttı.`}</h2>
+  <p class="hero-sub">İlk haftanızdaki gibi devam etseydiniz ${fmt(T.exp)} kg israf olacaktı; gerçekleşen ${fmt(T.act)} kg.</p>
+  <div class="bigtri">
+    <div><b class="num">${fmtTL(T.tl)}</b><span>maliyet tasarrufu</span></div>
+    <div><b class="num">${fmt(T.co, 0)} kg</b><span>CO₂e önlendi</span></div>
+    <div><b class="num">${fmt(T.kg / S.profile.portionKg, 0)}</b><span>porsiyon kurtarıldı</span></div>
+  </div>
+  <section class="section panel">
+    <div class="section-head"><h2>Nelerden tasarruf edildi?</h2></div>
+    <div class="seg" role="group" aria-label="Gruplama" style="margin-bottom:12px">
+      <button data-saveby="dish" aria-pressed="${saveBy === 'dish'}">Yemek yemek</button>
+      <button data-saveby="main" aria-pressed="${saveBy === 'main'}">Ana bileşen</button>
+    </div>
+    ${saveRows(list)}
+  </section>
+  ${sv.unmatched.length ? `<section class="section panel"><div class="section-head"><h2>Karşılaştırılamayanlar</h2></div>
+    <p class="small muted" style="margin-bottom:8px">İlk haftada aynı günde olmadığı için hesaba katılmadı.</p>
+    <ul class="list">${sv.unmatched.slice(0, 8).map(u => `<li><span>${esc(u.name)}</span><span class="num small">${fmt(u.kg)} kg</span></li>`).join('')}</ul></section>` : ''}
+  <p class="small muted section">${methodNote(sv)}</p>`;
+}
+function vBtasarruf(){
+  const list = restaurantsIn(S.profile.district).map(r => ({ ...r, sv:savings(r.data) })).filter(r => r.sv);
+  if (!list.length) return `<h2 class="hero">Tasarruf için restoranların en az 8 tamamlanmış kayıt günü gerekiyor.</h2>
+    <div class="stack" style="margin-top:22px"><button class="btn ghost block" data-action="seed-district">Örnek restoranları ekle</button></div>`;
+  const per = list.map(r => ({ name:r.data.profile.name || r.u, sub:`${r.data.profile.type} · ${r.sv.days} gün karşılaştırıldı`, exp:r.sv.total.exp, act:r.sv.total.act, kg:r.sv.total.kg, pct:r.sv.total.pct, tl:r.sv.total.tl, co:r.sv.total.co })).sort((a, b) => b.tl - a.tl);
+  const dish = {};
+  list.forEach(r => r.sv.dishes.forEach(d => { const F = factorsOf(r.data.profile)[d.main] || MAINS.diger; dish[d.name] ||= { name:d.name, main:d.main, exp:0, act:0, tl:0, co:0 }; const x = dish[d.name]; x.exp += d.exp; x.act += d.act; x.tl += d.tl; x.co += d.co; }));
+  const dishes = Object.values(dish).map(d => ({ ...d, kg:d.exp - d.act, pct: d.exp ? (d.exp - d.act) / d.exp * 100 : 0 })).sort((a, b) => b.tl - a.tl).slice(0, 12);
+  const streams = Object.keys(ROUTES).map(k => { const all = list.map(r => r.sv.streams.find(s => s.k === k)); return { k, kg:sum(all, s => s.kg), methane:sum(all, s => s.methane), tl:sum(all, s => s.tl) }; });
+  const E = sum(per, p => p.exp), A = sum(per, p => p.act);
+  const T = { kg:E - A, pct: E ? (E - A) / E * 100 : 0, tl:sum(per, p => p.tl), co:sum(per, p => p.co) };
+  return `<h2 class="hero num">İlçede önlenebilir israf %${Math.round(T.pct)} ${T.kg >= 0 ? 'azaldı' : 'arttı'}.</h2>
+  <p class="hero-sub">${list.length} restoranın her biri kendi ilk haftasıyla karşılaştırıldı: beklenen ${fmt(E)} kg, gerçekleşen ${fmt(A)} kg.</p>
+  <div class="bigtri">
+    <div><b class="num">${fmtTL(T.tl)}</b><span>maliyet tasarrufu</span></div>
+    <div><b class="num">${fmt(T.co, 0)} kg</b><span>CO₂e önlendi</span></div>
+    <div><b class="num">${fmt(T.kg)} kg</b><span>israf önlendi</span></div>
+  </div>
+  <section class="section panel"><div class="section-head"><h2>Restoran restoran</h2></div>${saveRows(per)}</section>
+  <section class="section panel"><div class="section-head"><h2>Yemek yemek (ilçe geneli)</h2></div>${saveRows(dishes)}</section>
+  <section class="section panel"><div class="section-head"><h2>Taşımayla çöpten kurtarılanlar</h2></div>${streamRows(streams, S.profile.mealKg)}</section>
+  <p class="small muted section">Her restoranın ilk 7 kayıt günü kendi karşılaştırma noktasıdır; sonraki tamamlanmış günler aynı yemek ve aynı haftanın günüyle karşılaştırılır. Bugün, hazırlık artıkları ve ilk haftada olmayan yemekler dahil değildir.</p>`;
+}
+
+/* =========================================================
+   BELEDİYE
+   ========================================================= */
+function stopsToday(){ return districtStops(S.profile.district); }
+function vBugun(){
+  const route = buildRoute(S.profile.district);
+  if (!route.all.length) { trackCtx = null; return `<h2 class="hero">${esc(S.profile.district)} ilçesinde kayıtlı restoran yok.</h2>
+    <p class="hero-sub">Restoranlar Bereket'e ${esc(S.profile.district)} ilçesiyle kayıt olduğunda günlük rota burada oluşur.</p>
+    <div class="stack" style="margin-top:22px"><button class="btn ghost block" data-action="seed-district">Örnek restoranları ekle</button></div>`; }
+  trackCtx = route.seq.length ? { route, focus:null } : null;
+  const done = route.all.filter(s => s.pendKg === 0 && s.doneKg > 0);
+  const notifs = route.all.filter(s => s.ready && s.pendKg > 0).sort((a, b) => b.ready.localeCompare(a.ready));
+  const silent = route.open.filter(s => !s.ready);
+  const saved = route.naiveKm > route.km + 0.05 ? Math.round((route.naiveKm - route.km) / route.naiveKm * 100) : 0;
+  const routeTot = {}; route.seq.forEach(s => Object.entries(s.byRoute).forEach(([k, v]) => routeTot[k] = (routeTot[k] || 0) + v));
+  const hero = route.seq.length ? `Bugün ${route.seq.length} durak, ${fmt(route.kg)} kg atık.` : done.length ? `Bugünkü toplama tamamlandı: ${fmt(sum(done, s => s.doneKg))} kg.` : 'Bugün toplanacak atık yok.';
+  const stop = (s, i, isDone) => `<li class="${isDone ? 'done' : ''}"><div class="rcard">
+    <div class="row" style="justify-content:space-between"><div><strong>${esc(s.name)}</strong><div class="small muted">${isDone ? esc(s.type) : `Varış ${toHM(s.eta)} · ${esc(s.type)}`}</div></div>
+      ${isDone ? `<span class="chip good">Toplandı ${s.doneAt}</span>` : s.ready ? `<span class="chip good">Hazır · ${s.ready}</span>` : '<span class="chip">Bildirim yok</span>'}</div>
+    ${isDone ? `<p class="small muted num">${fmt(s.doneKg)} kg teslim alındı</p>` :
+      `<p class="small num">${Object.entries(s.byRoute).map(([k, v]) => `<span style="white-space:nowrap"><i class="dot" style="background:${ROUTES[k].color}"></i> ${ROUTES[k].short} ${fmt(v)} kg</span>`).join(' &nbsp; ')}</p>
+       <button class="btn small" data-action="collect" data-u="${esc(s.u)}">Toplandı · ${fmt(s.pendKg)} kg</button>`}
+  </div></li>`;
+  return `<h2 class="hero num">${hero}</h2>
+  ${feedPanel()}
+  <p class="hero-sub">${route.seq.length ? `Rota ${fmt(route.km)} km, ${toHM(route.depart)}–${toHM(route.end)} arası (~${Math.round(route.end - route.depart)} dk). Hazır bildirenler önce ziyaret edilir.` : 'Restoranlar yemek ekledikçe rota otomatik oluşur.'}</p>
+
+  <section class="section panel">
+    <div class="section-head"><h2>Rota haritası</h2><button class="link small" data-action="reroute">Rotayı yeniden oluştur</button></div>
+    <div class="seg" role="group" aria-label="Rota kuralı" style="margin-bottom:12px">
+      <button data-rmode="all" aria-pressed="${!route.onlyReady}">Hazır olanlar önce, herkes</button>
+      <button data-rmode="ready" aria-pressed="${route.onlyReady}">Sadece hazır bildirenler</button>
+    </div>
+    ${route.seq.length ? `<div class="rstats" style="margin-bottom:12px">
+      <div><b class="num">${fmt(route.km)} km</b><span>toplam yol</span></div>
+      <div><b class="num">${Math.round(route.end - route.depart)} dk</b><span>tahmini süre</span></div>
+      <div><b class="num">${saved ? '−%' + saved : '—'}</b><span>${saved ? 'sıralı rotaya göre' : 'zaten en kısa'}</span></div>
+    </div>` : ''}
+    ${trackPanel(route, null)}
+  </section>
+
+  <section class="section panel">
+    <div class="section-head"><h2>Gelen bildirimler</h2><span class="small muted">${notifs.length} hazır</span></div>
+    <ul class="notif">${notifs.map(s => `<li><time>${s.ready}</time><span><strong>${esc(s.name)}</strong> atıklarının hazır olduğunu bildirdi · ${fmt(s.pendKg)} kg · rotada ${s.idx != null && route.seq.includes(s) ? s.idx + 1 + '. durak' : '—'}</span></li>`).join('') || '<li><time>—</time><span class="muted">Henüz bildirim yok.</span></li>'}</ul>
+    ${silent.length ? `<p class="small muted" style="margin-top:8px">${silent.length} restoran bildirim yapmadı${route.onlyReady ? '; bugünkü rotaya alınmadı' : '; rotanın sonuna eklendi'}: ${silent.map(s => esc(s.name)).join(', ')}.</p>` : ''}
+  </section>
+
+  ${route.seq.length ? `<section class="section"><div class="tiles">${Object.entries(ROUTES).map(([k, r]) => `<div class="tile" style="--c:${r.color}"><b class="num">${fmt(routeTot[k] || 0)} kg</b><span>${r.short}</span></div>`).join('')}</div></section>` : ''}
+
+  <section class="section panel">
+    <div class="section-head"><h2>Duraklar</h2>${route.seq.length > 1 ? `<button class="link small" data-action="collect-all">Tümünü toplandı işaretle</button>` : ''}</div>
+    <ol class="stops">${route.seq.map((s, i) => stop(s, i, false)).join('')}${done.map(s => stop(s, 0, true)).join('')}</ol>
+    ${!route.seq.length && !done.length ? '<p class="muted">Durak yok.</p>' : ''}
+  </section>`;
+}
+function vRestoranlar(){
+  const list = restaurantsIn(S.profile.district);
+  if (!list.length) return vBugun();
+  const end = today(), start = addDays(end, -6), pstart = addDays(start, -7), pend = addDays(start, -1);
+  const stats = list.map(({ u, data }) => {
+    const F = factorsOf(data.profile), all = rowsOf(data), rows = between(all, start, end), prev = between(all, pstart, pend);
+    const kg = sum(rows, r => r.kg), pk = sum(prev, r => r.kg);
+    const anim = sum(rows.filter(r => originOf(r) === 'h'), r => r.kg);
+    const byDish = {}; rows.filter(r => r.type !== 'hazirlik').forEach(r => byDish[r.name] = (byDish[r.name] || 0) + tlOf(r, F));
+    return { u, p:data.profile, kg, tl:sum(rows, r => tlOf(r, F)), co:sum(rows, r => co2Of(r, F)), animPct: kg ? Math.round(anim / kg * 100) : 0,
+      trend: pk ? Math.round((kg - pk) / pk * 100) : null, last: all.length ? all.map(r => r.date).sort().pop() : null,
+      top:Object.entries(byDish).sort((a, b) => b[1] - a[1]).slice(0, 3) };
+  }).sort((a, b) => b.tl - a.tl);
+  const T = { kg:sum(stats, s => s.kg), tl:sum(stats, s => s.tl), co:sum(stats, s => s.co) };
+  return `<h2 class="hero num">Bu hafta ilçedeki ${stats.length} restoranda ${fmt(T.kg)} kg israf.</h2>
+  <p class="hero-sub">Mali karşılığı ${fmtTL(T.tl)}, karbon ayak izi ${fmt(T.co, 0)} kg CO₂e. Liste mali kayba göre sıralı.</p>
+  <div class="stack section">${stats.map(s => `<details class="panel">
+    <summary><div style="min-width:0"><strong>${esc(s.p.name || s.u)}</strong><div class="small muted">${esc(s.p.type)}</div><div class="small num" style="margin-top:2px"><strong>${fmt(s.kg)} kg</strong> · ${fmtTL(s.tl)} · hayvansal %${s.animPct}</div></div></summary>
+    <div class="kv" style="margin-top:14px">
+      <div><span class="muted">Atık (7 gün)</span><b class="num">${fmt(s.kg)} kg</b></div>
+      <div><span class="muted">Mali kayıp</span><b class="num">${fmtTL(s.tl)}</b></div>
+      <div><span class="muted">Karbon</span><b class="num">${fmt(s.co, 0)} kg CO₂e</b></div>
+      <div><span class="muted">Hayvansal pay</span><b class="num">%${s.animPct}</b></div>
+    </div>
+    <p class="small muted" style="margin-top:10px">${s.last ? 'Son kayıt ' + dm(s.last) : 'Kayıt yok'}</p><div class="row" style="margin-top:8px">${s.trend == null ? '' : s.trend <= 0 ? `<span class="chip good">Geçen haftaya göre %${-s.trend} az</span>` : `<span class="chip bad">Geçen haftaya göre %${s.trend} fazla</span>`}</div>
+    ${s.top.length ? `<p class="small muted" style="margin-top:10px">En çok kayıp: ${s.top.map(([n, v]) => `${esc(n)} (${fmtTL(v)})`).join(', ')}</p>` : ''}
+  </details>`).join('')}</div>`;
+}
+function vAkislar(){
+  const list = restaurantsIn(S.profile.district);
+  if (!list.length) return vBugun();
+  const pickups = list.flatMap(({ data }) => data.pickups);
+  const end = today(), start = addDays(end, -13), m30 = addDays(end, -29);
+  const p14 = pickups.filter(p => p.date >= start && p.date <= end);
+  const p30 = pickups.filter(p => p.date >= m30);
+  const tot = k => sum(p30.filter(p => p.route === k), p => p.kg);
+  const labels = {}, colors = {}; Object.entries(ROUTES).forEach(([k, r]) => { labels[k] = r.short; colors[k] = r.color; });
+  const extra = { gida: k => `≈ ${fmt(k / S.profile.mealKg, 0)} öğün`, mama: () => 'barınaklara mama hammaddesi', kompost: () => 'park ve bahçelere', biyogaz: () => 'lisanslı tesise' };
+  return `<h2 class="hero num">Son 30 günde ${fmt(sum(p30, p => p.kg))} kg atık geri kazanıma gitti.</h2>
+  <p class="hero-sub">Bu da çöp sahasından ${fmt(sum(p30, p => p.kg) * LANDFILL, 0)} kg CO₂e metan salımının uzak tutulması demek.</p>
+  <section class="section panel">
+    <div class="section-head"><h2>Günlük toplanan</h2><span class="small muted">son 14 gün, kg</span></div>
+    ${dailyChart(start, end, p14, 'route', colors, Object.keys(ROUTES), labels)}
+    ${legend(labels, colors)}
+  </section>
+  <div class="stack section">${Object.entries(ROUTES).map(([k, r]) => `<div class="route" style="--c:${r.color}">
+    <h3>${r.name}</h3>
+    <div><div class="big num">${fmt(tot(k))} kg</div><div class="small muted">son 30 gün · ${extra[k](tot(k))}</div></div>
+    <p class="small muted">${r.desc}</p>
+  </div>`).join('')}</div>`;
+}
+function vBprofil(){
+  const P = S.profile, list = restaurantsIn(P.district);
+  const rows = list.flatMap(({ data }) => rowsOf(data).map(r => ({ ...r, _F:factorsOf(data.profile) })));
+  const delivered = rows.filter(r => r.picked), dKg = sum(delivered, r => r.kg);
+  const byRoute = k => sum(delivered.filter(r => r.route === k), r => r.kg);
+  const avoid = rows.filter(r => r.type !== 'hazirlik');
+  return `<div class="profile-head">
+    <div class="avatar">${esc(initials(P.name))}</div>
+    <div style="min-width:0"><h2>${esc(P.name || 'Belediye')}</h2><p class="small muted">${esc(P.district)} · ${list.length} restoran</p><p class="small muted">@${esc(user)} · toplama ${esc(P.collectTime)}</p></div>
+  </div>
+  <section class="section">
+    <h2 class="hero num" style="font-size:26px">İlçede ${fmt(dKg)} kg gıda atığı çöp yerine geri kazanıldı.</h2>
+    <div class="impact" style="margin-top:12px">
+      <div><div class="v num">${fmt(byRoute('gida') / P.mealKg, 0)}</div><p class="muted small">öğün karşılığı yemek ihtiyaç sahiplerine ulaştı</p></div>
+      <div><div class="v num">${fmt(byRoute('mama'))} kg</div><p class="muted small">barınak mama hattına gitti</p></div>
+      <div><div class="v num">${fmt(byRoute('kompost'))} kg</div><p class="muted small">park ve bahçeler için komposta gitti</p></div>
+      <div><div class="v num">${fmt(dKg * LANDFILL, 0)} kg</div><p class="muted small">CO₂e metan salımı çöp sahasından uzak tutuldu</p></div>
+      <div><div class="v num">${fmtTL(sum(avoid, r => tlOf(r, r._F)))}</div><p class="muted small">ilçedeki önlenebilir israfın mali karşılığı</p></div>
+    </div>
+  </section>
+  <section class="section panel">
+    <div class="section-head"><h2>Kalkınma hedefleri</h2></div>
+    <div class="stack">
+      <div class="sdg"><b>SDG 11</b><p>Sürdürülebilir şehirler: restoran, STK ve belediye arasında yerel döngüsel ekonomi.</p></div>
+      <div class="sdg"><b>SDG 12.3</b><p>Gıda israfını kaynağında azaltma.</p></div>
+      <div class="sdg"><b>SDG 13</b><p>Çöp sahasına giden organik atığı ve metanı azaltma.</p></div>
+    </div>
+  </section>
+  <form class="section panel stack" id="bprofileForm">
+    <h2>Belediye bilgileri</h2>
+    <label class="f">Belediye adı<input type="text" name="name" value="${esc(P.name)}"></label>
+    <div class="fields">
+      <label class="f">İlçe<input type="text" name="district" value="${esc(P.district)}"></label>
+      <label class="f">Günlük toplama saati<input type="time" name="collectTime" value="${esc(P.collectTime)}" class="in"></label>
+    </div>
+    <button type="submit" class="btn block">Bilgileri kaydet</button>
+  </form>
+  <div class="stack section"><button class="btn line block" data-action="logout">Çıkış yap</button></div>`;
+}
+
+/* =========================================================
+   Events
+   ========================================================= */
+document.addEventListener('submit', e => {
+  const f = e.target;
+  if (f.id === 'authForm') { e.preventDefault(); submitAuth(f); }
+  else if (f.id === 'profileForm') {
+    e.preventDefault();
+    const p = { ...S.profile };
+    delete p.factors;
+    const num = k => { const v = parseFloat(String(f.elements[k]?.value || '').replace(',', '.')); return v > 0 ? v : 0; };
+    ['name','type','district'].forEach(k => p[k] = f.elements[k].value.trim());
+    if (num('portionKg')) p.portionKg = num('portionKg');
+    p.monthly = { ciro:num('ciro'), alim:num('alim') };
+    p.prices = {};
+    Object.keys(MAINS).forEach(k => { if (num('tl_' + k)) p.prices[k] = num('tl_' + k); });
+    p.menu = {};
+    for (let i = 0; f.elements['mn_' + i]; i++) {
+      const name = String(f.elements['mn_' + i].value || '').trim().slice(0, 60);
+      const price = num('mp_' + i), daily = num('md_' + i), g = num('mg_' + i);
+      if (name && (price || daily)) p.menu[norm(name)] = { name, price, daily, g };
+    }
+    S.profile = p; save(); render(); toast('Bilgiler kaydedildi');
+  }
+  else if (f.id === 'moneyForm') {
+    e.preventDefault();
+    const v = k => { const x = parseFloat(String(f.elements[k].value || '').replace(',', '.')); return x > 0 ? x : 0; };
+    S.profile = { ...S.profile, monthly:{ ciro:v('ciro'), alim:v('alim') } };
+    save(); render(); toast('Mali bilgiler kaydedildi');
+  }
+  else if (f.id === 'bprofileForm') {
+    e.preventDefault();
+    S.profile = { ...S.profile, name:f.elements.name.value.trim(), district:f.elements.district.value.trim() || S.profile.district, collectTime:f.elements.collectTime.value || '16:00' };
+    save(); render(); toast('Bilgiler kaydedildi');
+  }
+});
+document.addEventListener('click', async e => {
+  const pk = e.target.closest('[data-pick]');
+  if (pk) { authRole = pk.dataset.pick; authStep = 'form'; authMode = 'login'; authErr = ''; render(); scrollTop(); return; }
+  const qc = e.target.closest('[data-qcat]');
+  if (qc) { qCat = qc.dataset.qcat; qSearch = ''; const s = $('#qsearch'); if (s) s.value = ''; $$('[data-qcat]').forEach(b => b.setAttribute('aria-pressed', b === qc)); $('#qgrid').innerHTML = qgridHTML(); return; }
+  const rm = e.target.closest('[data-rmode]');
+  if (rm) { S.profile.onlyReady = rm.dataset.rmode === 'ready'; save(); render(); toast(S.profile.onlyReady ? 'Rota yalnızca hazır bildirenlerle yeniden oluşturuldu' : 'Rota tüm restoranlarla yeniden oluşturuldu'); return; }
+  const sb = e.target.closest('[data-saveby]');
+  if (sb) { saveBy = sb.dataset.saveby; render(); return; }
+  const au = e.target.closest('[data-auth]');
+  if (au) { authMode = au.dataset.auth; authErr = ''; render(); return; }
+  const ro = e.target.closest('[data-role]');
+  if (ro) { signupRole = ro.dataset.role; authErr = ''; render(); return; }
+  const nav = e.target.closest('[data-nav]');
+  if (nav) { go(nav.dataset.nav); return; }
+  const r = e.target.closest('[data-range]');
+  if (r) { range = Number(r.dataset.range); render(); return; }
+  const a = e.target.closest('[data-action]');
+  if (!a) return;
+  const act = a.dataset.action;
+  if (act === 'toggle-pw') { const i = a.previousElementSibling; const show = i.type === 'password'; i.type = show ? 'text' : 'password'; a.textContent = show ? 'Gizle' : 'Göster'; }
+  else if (act === 'demo-login') demoLogin(a.dataset.kind);
+  else if (act === 'sim') {
+    if (sim.on) { sim.on = false; a.textContent = 'Canlı takibi simüle et (1 sa ≈ 80 sn)'; }
+    else if (trackCtx) { sim = { on:true, t0:trackCtx.route.depart - 1, start:performance.now(), speed:45 }; a.textContent = 'Simülasyonu durdur'; if (!rafId) rafId = requestAnimationFrame(tick); }
+  }
+  else if (act === 'reroute') { render(); const r = buildRoute(S.profile.district); toast(`Rota bildirimlere göre güncellendi · ${fmt(r.km)} km`); }
+  else if (act === 'plan-reset') { planData = null; planState = 'idle'; render(); }
+  else if (act === 'add-named') { const m = 'diger'; draft.items.push({ name:qSearch, main:m, type:'tabak', kg:1, route:defaultRoute(m, 'tabak'), conf:null, src:'elle' }); qSearch = ''; render(); }
+  else if (act === 'feed-open') openDetail(a.dataset.id);
+  else if (act === 'detail-close') $('#detail').close();
+  else if (act === 'auth-back') { authStep = 'role'; authErr = ''; render(); scrollTop(); }
+  else if (act === 'quick') { const [n, m] = QUICK[Number(a.dataset.q)]; draft.items.push({ name:n, main:m, type:'tabak', kg:1, route:defaultRoute(m, 'tabak'), conf:null, src:'elle' }); render(); const ks = $$('.irow [data-f=kg]'); ks[ks.length - 1]?.select(); }
+  else if (act === 'new-entry') { draft = { ...newDraft(), date:draft.date, meal:draft.meal }; render(); scrollTop(); }
+  else if (act === 'logout') logout();
+  else if (act === 'profile') go(role === 'belediye' ? 'bprofil' : 'profil');
+  else if (act === 'demo') {
+    if (S.entries.length && !confirm('Mevcut kayıtlarınız örnek verilerle değiştirilecek. Devam edilsin mi?')) return;
+    const keepDistrict = S.profile.district || 'Kağıthane';
+    S = genDemo({ seed:7, scale:1, menu:'lokanta', name:S.profile.name || 'Örnek Lokanta', type:S.profile.type, readyAt:null });
+    S.profile = { ...S.profile, district:keepDistrict };
+    save(); planText = ''; planState = 'idle'; go('pano'); toast('Örnek veriler yüklendi: 4 haftalık öğle servisi');
+  }
+  else if (act === 'reset') {
+    if (!confirm('Bu hesabın tüm kayıtları silinecek. Bu işlem geri alınamaz.')) return;
+    S = { ...blankFor('restoran'), profile:S.profile }; save();
+    draft = newDraft(); planText = ''; planState = 'idle'; go('pano'); toast('Kayıtlar silindi');
+  }
+  else if (act === 'seed-district') {
+    try { await ensureDemo(S.profile.district); await refresh(); render(); toast('Örnek restoranlar ilçenize eklendi'); }
+    catch (e) { toast('Örnek restoranlar eklenemedi.'); }
+  }
+  else if (act === 'analyze') analyze();
+  else if (act === 'stop') busy?.abort();
+  else if (act === 'add-item') { draft.items.push({ name:'', main:'pirinc', type:'tabak', kg:1, route:defaultRoute('pirinc', 'tabak'), conf:null, src:'elle' }); render(); const rs = $$('.irow [data-f=name]'); rs[rs.length - 1]?.focus(); }
+  else if (act === 'del-item') { draft.items.splice(Number(a.dataset.i), 1); render(); }
+  else if (act === 'discard') { draft.photos.forEach(p => URL.revokeObjectURL(p.url)); draft = { ...newDraft(), date:draft.date, meal:draft.meal }; render(); }
+  else if (act === 'del-photo') { const [p] = draft.photos.splice(Number(a.dataset.i), 1); if (p) URL.revokeObjectURL(p.url); draft.analysis = null; render(); }
+  else if (act === 'save-entry') saveEntry();
+  else if (act === 'del-entry') { if (!confirm('Bu kayıt silinsin mi?')) return; S.entries = S.entries.filter(x => x.id !== a.dataset.id); save(); render(); toast('Kayıt silindi'); }
+  else if (act === 'plan') makePlan();
+  else if (act === 'stop-plan') planCtl?.abort();
+  else if (act === 'ready') { S.ready = { date:today(), at:nowHM() }; save(); render(); toast('Belediye ekibine bildirildi'); }
+  else if (act === 'self-collect') {
+    if (!confirm('Bekleyen tüm atık teslim edildi olarak işaretlenecek. Devam edilsin mi?')) return;
+    const kg = collectFor(user, S, 'Restoran onayı'); render(); toast(`${fmt(kg)} kg teslim edildi`);
+  }
+  else if (act === 'collect') {
+    const u = a.dataset.u, name = loadData(u).profile.name; a.disabled = true;
+    try { const r = await api('/api/collect', { method:'POST', body:{ targets:[u], date:today(), time:nowHM() } }); await refresh(); render(); toast(`${name}: ${fmt(r.collected?.[u] || 0)} kg toplandı`); }
+    catch (e) { a.disabled = false; if (e.code === 'session_expired') sessionLost(); else toast('Toplama kaydedilemedi. Tekrar deneyin.'); }
+  }
+  else if (act === 'collect-all') {
+    if (!confirm('Rotadaki tüm restoranlar toplandı olarak işaretlenecek. Devam edilsin mi?')) return;
+    const targets = stopsToday().filter(s => s.pendKg > 0).map(s => s.u);
+    try { const r = await api('/api/collect', { method:'POST', body:{ targets, date:today(), time:nowHM() } }); await refresh(); render(); toast(`Toplam ${fmt(sum(Object.values(r.collected || {})))} kg toplandı`); }
+    catch (e) { if (e.code === 'session_expired') sessionLost(); else toast('Toplama kaydedilemedi. Tekrar deneyin.'); }
+  }
+});
+document.addEventListener('input', e => {
+  const t = e.target;
+  if (t.id === 'qsearch') { qSearch = t.value.trim(); $$('[data-qcat]').forEach(b => b.setAttribute('aria-pressed', !qSearch && b.dataset.qcat === qCat)); $('#qgrid').innerHTML = qgridHTML(); return; }
+  if (t.dataset.d) { draft[t.dataset.d] = t.value; return; }
+  const row = t.closest('.irow');
+  if (row && t.dataset.f) {
+    const it = draft.items[Number(row.dataset.i)];
+    it[t.dataset.f] = t.dataset.f === 'kg' ? Math.max(0, parseFloat(String(t.value).replace(',', '.')) || 0) : t.value;
+    if (t.dataset.f === 'main' || t.dataset.f === 'type') { it.route = defaultRoute(it.main, it.type); row.querySelector('[data-f=route]').value = it.route; }
+    if (t.dataset.f === 'main' || t.dataset.f === 'kg') it.conf = null;
+    if (t.dataset.f === 'kg') it.src = 'elle';
+    row.querySelector('[data-meta]').innerHTML = metaLine(it);
+    const c = $('#calc'); if (c) c.innerHTML = calcCard();
+  }
+});
+document.addEventListener('change', e => {
+  const t = e.target;
+  if (t.dataset.photo !== undefined && t.files?.length) { addPhotos(t.files); t.value = ''; }
+  else if (t.dataset.d || t.closest('.irow')) t.dispatchEvent(new Event('input', { bubbles:true }));
+});
+['dragover','dragenter'].forEach(ev => document.addEventListener(ev, e => { const d = e.target.closest?.('.photo-hero'); if (d) { e.preventDefault(); d.classList.add('over'); } }));
+document.addEventListener('dragleave', e => { const d = e.target.closest?.('.photo-hero'); if (d) d.classList.remove('over'); });
+document.addEventListener('drop', e => {
+  const d = e.target.closest?.('.photo-hero'); if (!d) return;
+  e.preventDefault(); d.classList.remove('over');
+  const f = e.dataTransfer?.files?.[0];
+  if (e.dataTransfer?.files?.length && imagesOK && !aiBlocked) addPhotos(e.dataTransfer.files);
+});
+
+async function uploadPhoto(entryId, blob){
+  try {
+    let small = await shrinkTo(blob, 720, 0.72);
+    if (small.size > 170000) small = await shrinkTo(blob, 560, 0.6);
+    const r = await api('/api/photo', { method:'POST', body:{ entryId, image:{ type:'image/jpeg', data:await blobToB64(small) } } });
+    const e = S.entries.find(x => x.id === entryId);
+    if (e) { e.photo = r.id; save(); }
+  } catch (e) { toast('Kayıt kaydedildi, fotoğraf yüklenemedi.'); }
+}
+async function shrinkTo(file, edge, q){
+  try {
+    const bmp = await createImageBitmap(file);
+    const k = Math.min(1, edge / Math.max(bmp.width, bmp.height));
+    const c = document.createElement('canvas'); c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k);
+    c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height); bmp.close?.();
+    return (await new Promise(r => c.toBlob(r, 'image/jpeg', q))) || file;
+  } catch (e) { return file; }
+}
+function saveEntry(){
+  const items = draft.items.filter(i => (Number(i.kg) || 0) > 0).map(i => ({ name:(i.name || '').trim(), main:i.main, type:i.type, kg:r1(Number(i.kg)), route:i.route, picked:null, src:i.src === 'foto' ? 'foto' : 'elle', ...(i.conf != null ? { conf:i.conf } : {}) }));
+  if (!items.length) { toast('En az bir satıra ağırlık girin'); return; }
+  const entry = { id:uid(), date:draft.date || today(), meal:draft.meal, menu:draft.menu, items, summary:draft.summary, tip:draft.tip, source:draft.source, at:new Date().toISOString(), dev:DEVICE_ID };
+  S.entries.push(entry);
+  save();
+  if (draft.photos.length) uploadPhoto(entry.id, draft.photos[0].blob);
+  draft.photos.forEach(p => URL.revokeObjectURL(p.url));
+  const F = factorsOf(S.profile), H = items.filter(i => originOf(i) === 'h');
+  const result = { date:draft.date || today(), meal:draft.meal, items, kg:sum(items, i => i.kg), co:sum(items, i => co2Of(i, F)), tl:sum(items, i => tlOf(i, F)), hk:sum(H, i => i.kg), hc:sum(H, i => co2Of(i, F)) };
+  draft = { ...newDraft(), date:draft.date, meal:draft.meal, menu:draft.menu, result };
+  render(); scrollTop();
+}
+
+/* =========================================================
+   Yapay zekâ: Vercel /api/ai üzerinden Claude
+   ========================================================= */
+const blobToB64 = b => new Promise((ok, no) => { const r = new FileReader(); r.onload = () => ok(String(r.result).split(',')[1] || ''); r.onerror = () => no(r.error); r.readAsDataURL(b); });
+function parseJSONText(t){
+  const s = String(t || '').replace(/```(?:json)?/g, '');
+  const i = s.indexOf('{'), j = s.lastIndexOf('}');
+  if (i < 0 || j < i) throw { code:'invalid_json' };
+  try { return JSON.parse(s.slice(i, j + 1)); } catch (e) { throw { code:'invalid_json' }; }
+}
+const AI = {
+  async json(prompt, { images = [], signal } = {}){
+    const imgs = [];
+    for (const b of images) imgs.push({ type: b.type && /^image\/(jpeg|png|webp|gif)$/.test(b.type) ? b.type : 'image/jpeg', data: await blobToB64(b) });
+    if (signal?.aborted) throw { code:'cancelled' };
+    const r = await api('/api/ai', { method:'POST', body:{ prompt, images:imgs }, signal });
+    return parseJSONText(r.text);
+  },
+  async limits(){ return { images:{ maxCount:3 } }; }
+};
+ERR.network = 'Sunucuya ulaşılamadı. Bağlantınızı kontrol edip tekrar deneyin.';
+ERR.timeout = 'Analiz çok uzun sürdü. Daha az fotoğrafla tekrar deneyin.';
+ERR.upstream_error = 'Yapay zekâ servisi şu an yanıt vermedi. Biraz sonra tekrar deneyin.';
+PERMANENT.push('not_configured');
+
+/* =========================================================
+   Boot
+   ========================================================= */
+render();
+(async () => {
+  try {
+    const st = await api('/api/ai');
+    if (st.configured) { sampleFn = AI; imagesOK = true; imgMax = 3; }
+  } catch (e) {}
+  aiReady = true;
+  if (!sampleFn) aiBlocked = true;
+  if (TOKEN) {
+    try {
+      const payload = JSON.parse(atob(TOKEN.split('.')[0].replace(/-/g, '+').replace(/_/g, '/')));
+      user = payload.u; role = payload.r;
+      await refresh();
+      if (!user) return;
+      if (!S) S = blankFor(role);
+      view = role === 'belediye' ? 'bugun' : 'kaydet';
+    } catch (e) { user = null; role = null; TOKEN = null; ssDel(TOKEN_KEY); lsDel(TOKEN_KEY); }
+    booting = false;
+    render(); pollFeed();
+  } else if (user && role === 'restoran' && !busy && planState !== 'loading') render();
+})();
+</script>
+</body>
+</html>
